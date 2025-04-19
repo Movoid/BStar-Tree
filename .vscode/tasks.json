@@ -1,0 +1,50 @@
+{
+    "tasks": [
+        {
+            "type": "process",
+            "label": "C/C++: g++ 全部构建",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-fdiagnostics-color=always",
+                "-g",
+                "${fileDirname}/*.cpp",
+                "-o",
+                "${fileDirname}/_output.run",
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "调试器生成的任务。"
+        },
+        {
+            "type": "process",
+            "label": "C/C++: g++ 仅此文件",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/_output.run",
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "调试器生成的任务。"
+        }
+    ],
+    "version": "2.0.0"
+}
