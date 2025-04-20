@@ -368,23 +368,61 @@ int main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-  bstar_tree<int, int, 100> tree{};
+#define SCALE 1000000
+#define T 10
+  random_device rd{};
+  mt19937 gen{rd()};
+  uniform_int_distribution<> dis{0, SCALE - 1};
 
-  int arr[1000000]{};
-  for (int i = 0; i < 1000000; i++) {
-    printf("\nTimestamp %d.\n", i);
-    arr[i] = i % 10;
+  int t = T;
+  int *ptrs[T]{};
 
-    tree.insert(i, &arr[i]);
+  bool pass{true};
+
+  while (t--) {
+    ptrs[t] = (int *)malloc(sizeof(int) * SCALE);
+    bstar_tree<int, int, 100> tree{};
+    int search_key = dis(gen);
+
+    vector<int> ans;
+    vector<int *> ret;
+    ans.reserve(1); // 只有一次匹配
+    // 插入并在碰到 search_key 时记录下答案
+    for (int i = 0; i < SCALE; i++) {
+      ptrs[t][i] = dis(gen);
+      tree.insert(i, &ptrs[t][i]);
+      if (i == search_key) {
+        ans.emplace_back(ptrs[t][i]);
+      }
+    }
+
+    // 查找
+    ret = tree.find(search_key);
+
+    // 先校验数量
+    if (ret.size() != ans.size()) {
+      fprintf(stderr, "SIZE MISMATCH: expected %zu, got %zu\n", ans.size(), ret.size());
+      pass = false;
+    }
+
+    // 按实际元素个数比较
+    size_t n = min(ret.size(), ans.size());
+    for (size_t i = 0; i < n; i++) {
+      if (*ret[i] != ans[i]) {
+        fprintf(stderr, "COMPARE FAILED at index %zu: expected %d, got %d\n", i, ans[i], *ret[i]);
+        pass = false;
+      }
+    }
+
+    printf("ROUND %d FINISHED.\n", T - t);
+
+    free(ptrs[t]);
   }
 
-  // tree.DEBUG_traverse(tree.get_root());
-
-  std::vector<int *> data{tree.find(3)};
-  cout << data.size() << endl;
-
-  for (int i = 0; i < data.size(); i++) {
-    std::cout << *data[i] << std::endl;
+  if (pass) {
+    printf("SUCCESSFULLY PASSED ALL ROUNDS!\n");
+  } else {
+    printf("FAILED.\n");
   }
 
   return 0;
