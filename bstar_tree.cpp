@@ -12,7 +12,9 @@
 \*================================================*/
 
 // `M` >= 4
-template <typename KeyType, typename ValType, std::size_t M>
+template <typename KeyType, typename ValType, std::size_t M,
+          typename _Requires =
+              std::void_t<std::enable_if_t<M >= 4>, decltype(std::declval<KeyType>() < std::declval<KeyType>())>>
 class bstar_tree {
 private:
   struct bstar_node {
@@ -96,7 +98,7 @@ private:
 
   // will update node key_cnt.
   // must fix the father delim key!
-  void balance_nodes_(bstar_node *node1, std::size_t need1, bstar_node *node2, std::size_t need2) {
+  void balance_nodes_(bstar_node *node1, bstar_node *node2, bstar_node *parent, std::size_t need1, std::size_t need2) {
     std::size_t move_cnt{};
     if (node1->key_cnt >= need1) {
       move_cnt = node1->key_cnt - need1;
@@ -138,20 +140,20 @@ private:
     }
   }
 
-  void do_2_1_merge_root_() {
-    if (root->key_cnt == 1) {
-      bstar_node *node1{root->idx.key_ptr[0]}, *node2{root->idx.key_ptr[1]};
-      std::size_t total{node1->key_cnt + node2->key_cnt};
-      balance_nodes_(node1, total, node2, 0);
-      delete node2;
-      root->key_cnt = 0;
-      try_reduce_root_();
-    }
-  }
+  // void do_2_1_merge_root_() {
+  //   if (root->key_cnt == 1) {
+  //     bstar_node *node1{root->idx.key_ptr[0]}, *node2{root->idx.key_ptr[1]};
+  //     std::size_t total{node1->key_cnt + node2->key_cnt};
+  //     balance_nodes_(node1, total, node2, 0);
+  //     delete node2;
+  //     root->key_cnt = 0;
+  //     try_reduce_root_();
+  //   }
+  // }
 
   void do_1_2_split_(bstar_node *node1, bstar_node *parent, std::size_t idx1) {
-    printf("[1-2 split] Start:\n");
-    DEBUG_print_node(node1);
+    // printf("[1-2 split] Start:\n");
+    // DEBUG_print_node(node1);
     std::size_t need1{(node1->key_cnt + 1) / 2};
     std::size_t need2{node1->key_cnt / 2};
     bstar_node *node2{new bstar_node{.key_cnt = 0, .is_leaf = node1->is_leaf}};
@@ -175,15 +177,15 @@ private:
       parent->idx.key_ptr[idx1 + 1] = node2;
       parent->key_cnt++;
     }
-    printf("[1-2 split] Result:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
+    // printf("[1-2 split] Result:\n");
+    // DEBUG_print_node(node1);
+    // DEBUG_print_node(node2);
   }
 
   void do_2_3_split_(bstar_node *node1, bstar_node *node2, bstar_node *parent, std::size_t idx1, std::size_t idx2) {
-    printf("[2-3 split] Start:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
+    // printf("[2-3 split] Start:\n");
+    // DEBUG_print_node(node1);
+    // DEBUG_print_node(node2);
     std::size_t total{node1->key_cnt + node2->key_cnt};
     std::size_t need1{(total + 2) / 3};
     std::size_t need2{(total + 1) / 3};
@@ -210,28 +212,33 @@ private:
     parent->key[idx2] = node3->key[0];
     parent->idx.key_ptr[idx2 + 1] = node3;
     parent->key_cnt++;
-    printf("[2-3 split] Result:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_node(node3);
+    // printf("[2-3 split] Result:\n");
+    // DEBUG_print_node(node1);
+    // DEBUG_print_node(node2);
+    // DEBUG_print_node(node3);
   }
 
   // todo
-  void do_3_2_merge_(bstar_node *node1, bstar_node *node2, bstar_node *parent, std::size_t idx1, std::size_t idx2) {
+
+  void do_2_1_merge_(bstar_node *node1, bstar_node *node2, bstar_node *parent, std::size_t idx1, std::size_t idx2) {
+  }
+
+  void do_3_2_merge_(bstar_node *node1, bstar_node *node2, bstar_node *node3, bstar_node *parent, std::size_t idx1,
+                     std::size_t idx2, std::size_t idx3) {
   }
 
   void do_equal_split_(bstar_node *node1, bstar_node *node2, bstar_node *parent, std::size_t idx1) {
-    printf("[equal-split] Start:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
+    // printf("[equal-split] Start:\n");
+    // DEBUG_print_node(node1);
+    // DEBUG_print_node(node2);
     std::size_t total{node1->key_cnt + node2->key_cnt};
     std::size_t need1{total / 2};
     std::size_t need2{total - need1};
     balance_nodes_(node1, need1, node2, need2);
     parent->key[idx1] = node2->key[0];
-    printf("[equal-split] Result:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
+    // printf("[equal-split] Result:\n");
+    // DEBUG_print_node(node1);
+    // DEBUG_print_node(node2);
   }
 
   void try_fix_overflow(bstar_node *node1, bstar_node *parent, std::size_t idx1) {
@@ -264,6 +271,10 @@ private:
       return;
     }
     do_2_3_split_(node1, node2, parent, idx1, idx2);
+  }
+
+  // todo
+  void try_fix_underflow(bstar_node *node1, bstar_node *parent, std::size_t idx1) {
   }
 
 public:
@@ -308,7 +319,11 @@ public:
         cur = cur->idx.key_ptr[cur_from];
       }
     }
+    std::size_t check{cur->find_data_ptr_index_(k)};
     std::size_t idx{cur->find_idx_ptr_index_(k)};
+    if (idx != check) {
+      return false;
+    }
     if (idx != cur->key_cnt) {
       std::memmove(cur->leaf.data_ptr + idx + 1, cur->leaf.data_ptr + idx, (cur->key_cnt - idx) * sizeof(ValType *));
       std::memmove(cur->key + idx + 1, cur->key + idx, (cur->key_cnt - idx) * sizeof(KeyType));
@@ -336,27 +351,6 @@ public:
     return values;
   }
 
-  void DEBUG_traverse(bstar_node *cur) {
-    using namespace std;
-    if (cur->is_leaf) {
-      printf("reach leaf.\n");
-      for (int i = 0; i < cur->key_cnt; i++) {
-        printf("\t[key] %d, [val] %d \n", cur->key[i], *cur->leaf.data_ptr[i]);
-      }
-      printf("end.\n");
-    } else {
-      for (int i = 0; i < cur->key_cnt + 1; i++) {
-        if (cur->idx.key_ptr[i] != NULL) {
-
-          DEBUG_traverse(cur->idx.key_ptr[i]);
-        }
-      }
-    }
-  }
-  bstar_node *get_root() {
-    return root;
-  }
-
   // todo
   std::vector<ValType *> erase(const KeyType &k) {
   }
@@ -381,7 +375,7 @@ int main() {
 
   while (t--) {
     ptrs[t] = (int *)malloc(sizeof(int) * SCALE);
-    bstar_tree<int, int, 100> tree{};
+    bstar_tree<int, int, 10> tree{};
     int search_key = dis(gen);
 
     vector<int> ans;
