@@ -16,7 +16,7 @@ template <typename KeyType, typename ValType, std::size_t M,
           typename _Requires =
               std::void_t<std::enable_if_t<M >= 4>, decltype(std::declval<KeyType>() < std::declval<KeyType>())>>
 class bstar_tree {
-private:
+public:
   struct bstar_node {
     KeyType key[M - 1]{};
     union {
@@ -115,40 +115,6 @@ private:
     puts("");
   }
 
-  // // will update node key_cnt.
-  // // must fix the father delim key!
-  // [[deprecated("Deprecated")]] void balance_nodes_(bstar_node *node1, std::size_t need1, bstar_node *node2,
-  //                                                  std::size_t need2) {
-  //   std::size_t move_cnt{};
-  //   if (node1->key_cnt > need1) {
-  //     move_cnt = node1->key_cnt - need1;
-  //     std::memmove(node2->key + move_cnt, node2->key, node2->key_cnt * sizeof(KeyType));
-  //     std::memmove(node2->key, node1->key + need1, move_cnt * sizeof(KeyType));
-  //     if (node1->is_leaf) {
-  //       std::memmove(node2->leaf.data_ptr + move_cnt, node2->leaf.data_ptr, node2->key_cnt * sizeof(ValType *));
-  //       std::memmove(node2->leaf.data_ptr, node1->leaf.data_ptr + need1, move_cnt * sizeof(ValType *));
-  //     } else {
-  //       std::memmove(node2->idx.key_ptr + move_cnt + 1, node2->idx.key_ptr + 1, node2->key_cnt * sizeof(bstar_node
-  //       *)); std::memmove(node2->idx.key_ptr + 1, node1->idx.key_ptr + need1 + 1, move_cnt * sizeof(bstar_node *));
-  //     }
-  //   } else {
-  //     move_cnt = need1 - node1->key_cnt;
-  //     std::memmove(node1->key + node1->key_cnt, node2->key, move_cnt * sizeof(KeyType));
-  //     std::memmove(node2->key, node2->key + move_cnt, (node2->key_cnt - move_cnt) * sizeof(KeyType));
-  //     if (node1->is_leaf) {
-  //       std::memmove(node1->leaf.data_ptr + node1->key_cnt, node2->leaf.data_ptr, move_cnt * sizeof(ValType *));
-  //       std::memmove(node2->leaf.data_ptr, node2->leaf.data_ptr + move_cnt,
-  //                    (node2->key_cnt - move_cnt) * sizeof(ValType *));
-  //     } else {
-  //       std::memmove(node1->idx.key_ptr + node1->key_cnt + 1, node2->idx.key_ptr + 1, move_cnt * sizeof(bstar_node
-  //       *)); std::memmove(node2->idx.key_ptr + 1, node2->idx.key_ptr + move_cnt + 1,
-  //                    (node2->key_cnt - move_cnt) * sizeof(bstar_node *));
-  //     }
-  //   }
-  //   node1->key_cnt = need1;
-  //   node2->key_cnt = need2;
-  // }
-
   // standard balance, parent != nullptr
   KeyType redistribute_keys_(bstar_node *node1, bstar_node *node2, std::size_t need1, std::size_t need2,
                              bstar_node *parent, std::size_t idx1) {
@@ -176,7 +142,7 @@ private:
         // adjust
         std::memmove(node2->key + key_move, node2->key, node2->key_cnt * sizeof(KeyType));
         // move
-        std::memcpy(node2->key, node1->key + need1, (key_move - 1) * sizeof(KeyType));
+        std::memcpy(node2->key, node1->key + need1 + 1, (key_move - 1) * sizeof(KeyType));
         // if parent is nullptr? node1 is root?
         // this function will not check this. should be guaranteed valid.
         node2->key[key_move - 1] = parent->key[idx1];
@@ -212,9 +178,10 @@ private:
         node1->key[node1->key_cnt] = parent->key[idx1];
         std::memcpy(node1->key + node1->key_cnt + 1, node2->key, (key_move - 1) * sizeof(KeyType));
         // adjust
-        std::memmove(node2->key, node2->key + key_move - 1, (node2->key_cnt - key_move) * sizeof(KeyType));
+        std::memmove(node2->key, node2->key + key_move, (node2->key_cnt - key_move) * sizeof(KeyType)); // BUG
         // move
-        std::memcpy(node1->idx.key_ptr + node1->key_cnt + 1, node2->idx.key_ptr, ptr_move * sizeof(bstar_node *));
+        std::memcpy(node1->idx.key_ptr + node1->key_cnt + 1, node2->idx.key_ptr,
+                    ptr_move * sizeof(bstar_node *)); // ?
         // adjust
         std::memmove(node2->idx.key_ptr, node2->idx.key_ptr + ptr_move,
                      (node2->key_cnt + 1 - ptr_move) * sizeof(bstar_node *));
@@ -254,17 +221,6 @@ private:
     }
   }
 
-  // void do_2_1_merge_root_() {
-  //   if (root->key_cnt == 1) {
-  //     bstar_node *node1{root->idx.key_ptr[0]}, *node2{root->idx.key_ptr[1]};
-  //     std::size_t total{node1->key_cnt + node2->key_cnt};
-  //     balance_nodes_(node1, total, node2, 0);
-  //     delete node2;
-  //     root->key_cnt = 0;
-  //     try_reduce_root_();
-  //   }
-  // }
-
   void do_1_2_split_root_() {
     printf("\n[1-2 split root] Start:\n");
     DEBUG_print_node(root);
@@ -297,40 +253,11 @@ private:
     root = new_root;
   }
 
-  void do_1_2_split_(bstar_node *node1, bstar_node *parent, std::size_t idx1) {
-    printf("\n[1-2 split] Start:\n");
-    DEBUG_print_node(node1);
-
-    bstar_node *node2{new bstar_node{.key_cnt = 0, .is_leaf = node1->is_leaf}};
-    // balance_nodes_(node1, need1, node2, need2);
-
-    std::size_t need1{(node1->key_cnt + 1) / 2};
-    std::size_t need2{node1->key_cnt / 2};
-
-    printf("\n<redistribute> Start:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(parent, idx1, parent->key_cnt);
-    KeyType new_key = redistribute_keys_(node1, node2, need1, need2, parent, idx1);
-    if (node1->is_leaf) {
-      node2->leaf.next = node1->leaf.next;
-      node1->leaf.next = node2;
-    }
-
-    insert_key_in_parent(node1, node2, parent, idx1, new_key);
-    printf("\n<redistribute> Result:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(parent, idx1, parent->key_cnt);
-    printf("[1-2 split] Result:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-  }
-
   void do_2_3_split_(bstar_node *node1, bstar_node *node2, bstar_node *parent, std::size_t idx1, std::size_t idx2) {
     printf("\n[2-3 split] Start:\n");
     DEBUG_print_node(node1);
     DEBUG_print_node(node2);
+    DEBUG_print_parent(parent, idx1, idx2);
     // first fill node3
     bstar_node *node3{new bstar_node{.key_cnt = 0, .is_leaf = node1->is_leaf}};
 
@@ -382,6 +309,7 @@ private:
     DEBUG_print_node(node1);
     DEBUG_print_node(node2);
     DEBUG_print_node(node3);
+    DEBUG_print_parent(parent, idx1, idx2);
   }
 
   // todo
@@ -397,6 +325,7 @@ private:
     printf("\n[equal-split] Start:\n");
     DEBUG_print_node(node1);
     DEBUG_print_node(node2);
+    DEBUG_print_parent(parent, idx1, parent->key_cnt);
     std::size_t total{node1->key_cnt + node2->key_cnt};
     std::size_t need1{total / 2};
     std::size_t need2{total - need1};
@@ -405,10 +334,10 @@ private:
     DEBUG_print_node(node1);
     DEBUG_print_node(node2);
     DEBUG_print_parent(parent, idx1, parent->key_cnt);
-    KeyType new_key = redistribute_keys_(node1, node2, need1, need2, parent, idx1);
+    KeyType new_key = redistribute_keys_(node1, node2, need1, need2, parent, idx1); // BUG
     modify_key_in_parent_(node1, node2, parent, idx1, new_key);
 
-    printf("\n<redistribute> Start:\n");
+    printf("\n<redistribute> Result:\n");
     DEBUG_print_node(node1);
     DEBUG_print_node(node2);
     DEBUG_print_parent(parent, idx1, parent->key_cnt);
@@ -416,6 +345,7 @@ private:
     printf("[equal-split] Result:\n");
     DEBUG_print_node(node1);
     DEBUG_print_node(node2);
+    DEBUG_print_parent(parent, idx1, parent->key_cnt);
   }
 
   void try_fix_overflow(bstar_node *node1, bstar_node *parent, std::size_t idx1) {
@@ -428,18 +358,10 @@ private:
     if (idx1 + 1 <= parent->key_cnt) { // ptr index can be key_cnt
       idx2 = idx1 + 1;
       node2 = parent->idx.key_ptr[idx2];
-      if (!node2) {
-        do_1_2_split_(node1, parent, idx1);
-        return;
-      }
     }
     if (idx1 > 0) {
       idx2 = idx1 - 1;
       node2 = parent->idx.key_ptr[idx2];
-      if (!node2) {
-        do_1_2_split_(node1, parent, idx1);
-        return;
-      }
       std::swap(idx1, idx2);
       std::swap(node1, node2);
     }
@@ -498,6 +420,7 @@ public:
     }
     printf("\n[insert] Start:\n");
     DEBUG_print_node(cur);
+    if (prev) DEBUG_print_parent(prev, cur_from, prev->key_cnt);
     std::size_t check{cur->find_data_ptr_index_(k)};
     std::size_t idx{cur->find_idx_ptr_index_(k)};
     if (idx != check) {
@@ -512,10 +435,11 @@ public:
     cur->key_cnt++;
     printf("[insert] Result:\n");
     DEBUG_print_node(cur);
+    if (prev) DEBUG_print_parent(prev, cur_from, prev->key_cnt);
     return true;
   }
 
-  std::vector<ValType *> find(const KeyType &k) {
+  std::vector<ValType *> find(const KeyType &k) const {
     bstar_node *cur{root};
     while (cur && !cur->is_leaf) {
       cur = cur->idx.key_ptr[cur->find_data_ptr_index_(k)];
@@ -550,7 +474,7 @@ public:
       }
       cur = cur->leaf.next;
     }
-    printf("All keys searched %d.\n", a.size());
+    printf("All keys searched %zu.\n", a.size());
     puts("");
   }
 
@@ -559,13 +483,24 @@ public:
   }
 };
 
+void DEBUG_search_full(bstar_tree<int, int, 9> &tree, int ts) {
+  std::vector<int *> ans{};
+  for (int i = 0; i <= ts; i++) {
+    ans = tree.find(i);
+    if (ans.size() != 1) {
+      printf("\n[ERROR] TREE BROKEN IN TIMESTAMP %d.\n", ts);
+      printf("\n[ERROR] KEY %d NOT FOUND.\n", i);
+    }
+  }
+}
+
 int main() {
   using namespace std;
 
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-#define SCALE 100
+#define SCALE 1000
 #define T 1
   random_device rd{};
   mt19937 gen{3};
@@ -578,7 +513,7 @@ int main() {
 
   while (t--) {
     ptrs[t] = (int *)malloc(sizeof(int) * SCALE);
-    bstar_tree<int, int, 10> tree{};
+    bstar_tree<int, int, 9> tree{};
     auto a = tree.get_root();
     int search_key = dis(gen);
 
@@ -593,6 +528,7 @@ int main() {
       if (i == search_key) {
         ans.emplace_back(ptrs[t][i]);
       }
+      DEBUG_search_full(tree, i);
     }
 
     tree.traverse_full_tree();
