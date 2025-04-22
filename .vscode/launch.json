@@ -24,7 +24,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: g++ 仅此文件"
+            // "preLaunchTask": "C/C++: g++ 仅此文件"
         },
     ],
     "version": "2.0.0"

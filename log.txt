@@ -1,0 +1,2621 @@
+
+TIMESTAMP 0
+
+[insert] Start:
+LEAF Node 0x559c412cd4b0:
+	
+[insert] Result:
+LEAF Node 0x559c412cd4b0:
+	0 
+
+TIMESTAMP 1
+
+[insert] Start:
+LEAF Node 0x559c412cd4b0:
+	0 
+[insert] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 
+
+TIMESTAMP 2
+
+[insert] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 
+[insert] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 
+
+TIMESTAMP 3
+
+[insert] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 
+[insert] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 
+
+TIMESTAMP 4
+
+[insert] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 
+[insert] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 
+
+TIMESTAMP 5
+
+[insert] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 
+[insert] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 
+
+TIMESTAMP 6
+
+[insert] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 
+[insert] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 6 
+
+TIMESTAMP 7
+
+[insert] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 6 
+[insert] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 6 7 
+
+TIMESTAMP 8
+
+[1-2 split root] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 6 7 
+[1-2 split root] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 
+LEAF Node 0x559c412ce600:
+	4 5 6 7 
+INDEX Parent Node 0x559c412ce570:
+	[4] 
+
+[insert] Start:
+LEAF Node 0x559c412ce600:
+	4 5 6 7 
+[insert] Result:
+LEAF Node 0x559c412ce600:
+	4 5 6 7 8 
+
+TIMESTAMP 9
+
+[insert] Start:
+LEAF Node 0x559c412ce600:
+	4 5 6 7 8 
+[insert] Result:
+LEAF Node 0x559c412ce600:
+	4 5 6 7 8 9 
+
+TIMESTAMP 10
+
+[insert] Start:
+LEAF Node 0x559c412ce600:
+	4 5 6 7 8 9 
+[insert] Result:
+LEAF Node 0x559c412ce600:
+	4 5 6 7 8 9 10 
+
+TIMESTAMP 11
+
+[insert] Start:
+LEAF Node 0x559c412ce600:
+	4 5 6 7 8 9 10 
+[insert] Result:
+LEAF Node 0x559c412ce600:
+	4 5 6 7 8 9 10 11 
+
+TIMESTAMP 12
+
+[equal-split] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 
+LEAF Node 0x559c412ce600:
+	4 5 6 7 8 9 10 11 
+
+<redistribute> Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 
+LEAF Node 0x559c412ce600:
+	4 5 6 7 8 9 10 11 
+INDEX Parent Node 0x559c412ce570:
+	[4] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 
+LEAF Node 0x559c412ce600:
+	6 7 8 9 10 11 
+INDEX Parent Node 0x559c412ce570:
+	[6] 
+[equal-split] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 
+LEAF Node 0x559c412ce600:
+	6 7 8 9 10 11 
+
+[insert] Start:
+LEAF Node 0x559c412ce600:
+	6 7 8 9 10 11 
+[insert] Result:
+LEAF Node 0x559c412ce600:
+	6 7 8 9 10 11 12 
+
+TIMESTAMP 13
+
+[insert] Start:
+LEAF Node 0x559c412ce600:
+	6 7 8 9 10 11 12 
+[insert] Result:
+LEAF Node 0x559c412ce600:
+	6 7 8 9 10 11 12 13 
+
+TIMESTAMP 14
+
+[equal-split] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 
+LEAF Node 0x559c412ce600:
+	6 7 8 9 10 11 12 13 
+
+<redistribute> Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 
+LEAF Node 0x559c412ce600:
+	6 7 8 9 10 11 12 13 
+INDEX Parent Node 0x559c412ce570:
+	[6] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 6 
+LEAF Node 0x559c412ce600:
+	7 8 9 10 11 12 13 
+INDEX Parent Node 0x559c412ce570:
+	[7] 
+[equal-split] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 6 
+LEAF Node 0x559c412ce600:
+	7 8 9 10 11 12 13 
+
+[insert] Start:
+LEAF Node 0x559c412ce600:
+	7 8 9 10 11 12 13 
+[insert] Result:
+LEAF Node 0x559c412ce600:
+	7 8 9 10 11 12 13 14 
+
+TIMESTAMP 15
+
+[2-3 split] Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 6 
+LEAF Node 0x559c412ce600:
+	7 8 9 10 11 12 13 14 
+
+<redistribute> Start:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 5 6 
+LEAF Node 0x559c412ce600:
+	7 8 9 10 11 12 13 14 
+INDEX Parent Node 0x559c412ce570:
+	[7] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ce600:
+	7 8 9 
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 
+INDEX Parent Node 0x559c412ce570:
+	7 [10] 
+
+<redistribute> Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 
+INDEX Parent Node 0x559c412ce570:
+	[5] 10 
+[2-3 split] Result:
+LEAF Node 0x559c412cd4b0:
+	0 1 2 3 4 
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 
+
+[insert] Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 
+[insert] Result:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 
+
+TIMESTAMP 16
+
+[insert] Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 
+[insert] Result:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 16 
+
+TIMESTAMP 17
+
+[insert] Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 16 
+[insert] Result:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 16 17 
+
+TIMESTAMP 18
+
+[equal-split] Start:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 16 17 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 16 17 
+INDEX Parent Node 0x559c412ce570:
+	5 [10] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 10 
+LEAF Node 0x559c412ce690:
+	11 12 13 14 15 16 17 
+INDEX Parent Node 0x559c412ce570:
+	5 [11] 
+[equal-split] Result:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 10 
+LEAF Node 0x559c412ce690:
+	11 12 13 14 15 16 17 
+
+[insert] Start:
+LEAF Node 0x559c412ce690:
+	11 12 13 14 15 16 17 
+[insert] Result:
+LEAF Node 0x559c412ce690:
+	11 12 13 14 15 16 17 18 
+
+TIMESTAMP 19
+
+[equal-split] Start:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 10 
+LEAF Node 0x559c412ce690:
+	11 12 13 14 15 16 17 18 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 10 
+LEAF Node 0x559c412ce690:
+	11 12 13 14 15 16 17 18 
+INDEX Parent Node 0x559c412ce570:
+	5 [11] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 10 11 
+LEAF Node 0x559c412ce690:
+	12 13 14 15 16 17 18 
+INDEX Parent Node 0x559c412ce570:
+	5 [12] 
+[equal-split] Result:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 10 11 
+LEAF Node 0x559c412ce690:
+	12 13 14 15 16 17 18 
+
+[insert] Start:
+LEAF Node 0x559c412ce690:
+	12 13 14 15 16 17 18 
+[insert] Result:
+LEAF Node 0x559c412ce690:
+	12 13 14 15 16 17 18 19 
+
+TIMESTAMP 20
+
+[2-3 split] Start:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 10 11 
+LEAF Node 0x559c412ce690:
+	12 13 14 15 16 17 18 19 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 10 11 
+LEAF Node 0x559c412ce690:
+	12 13 14 15 16 17 18 19 
+INDEX Parent Node 0x559c412ce570:
+	5 [12] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ce690:
+	12 13 14 
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 
+INDEX Parent Node 0x559c412ce570:
+	5 12 [15] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 
+INDEX Parent Node 0x559c412ce570:
+	5 [10] 15 
+[2-3 split] Result:
+LEAF Node 0x559c412ce600:
+	5 6 7 8 9 
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 
+
+[insert] Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 
+[insert] Result:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 
+
+TIMESTAMP 21
+
+[insert] Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 
+[insert] Result:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 21 
+
+TIMESTAMP 22
+
+[insert] Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 21 
+[insert] Result:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 21 22 
+
+TIMESTAMP 23
+
+[equal-split] Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 21 22 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 21 22 
+INDEX Parent Node 0x559c412ce570:
+	5 10 [15] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 
+LEAF Node 0x559c412ce720:
+	16 17 18 19 20 21 22 
+INDEX Parent Node 0x559c412ce570:
+	5 10 [16] 
+[equal-split] Result:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 
+LEAF Node 0x559c412ce720:
+	16 17 18 19 20 21 22 
+
+[insert] Start:
+LEAF Node 0x559c412ce720:
+	16 17 18 19 20 21 22 
+[insert] Result:
+LEAF Node 0x559c412ce720:
+	16 17 18 19 20 21 22 23 
+
+TIMESTAMP 24
+
+[equal-split] Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 
+LEAF Node 0x559c412ce720:
+	16 17 18 19 20 21 22 23 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 
+LEAF Node 0x559c412ce720:
+	16 17 18 19 20 21 22 23 
+INDEX Parent Node 0x559c412ce570:
+	5 10 [16] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 16 
+LEAF Node 0x559c412ce720:
+	17 18 19 20 21 22 23 
+INDEX Parent Node 0x559c412ce570:
+	5 10 [17] 
+[equal-split] Result:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 16 
+LEAF Node 0x559c412ce720:
+	17 18 19 20 21 22 23 
+
+[insert] Start:
+LEAF Node 0x559c412ce720:
+	17 18 19 20 21 22 23 
+[insert] Result:
+LEAF Node 0x559c412ce720:
+	17 18 19 20 21 22 23 24 
+
+TIMESTAMP 25
+
+[2-3 split] Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 16 
+LEAF Node 0x559c412ce720:
+	17 18 19 20 21 22 23 24 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 15 16 
+LEAF Node 0x559c412ce720:
+	17 18 19 20 21 22 23 24 
+INDEX Parent Node 0x559c412ce570:
+	5 10 [17] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ce720:
+	17 18 19 
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 
+INDEX Parent Node 0x559c412ce570:
+	5 10 17 [20] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 
+INDEX Parent Node 0x559c412ce570:
+	5 10 [15] 20 
+[2-3 split] Result:
+LEAF Node 0x559c412ce690:
+	10 11 12 13 14 
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 
+
+[insert] Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 
+[insert] Result:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 
+
+TIMESTAMP 26
+
+[insert] Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 
+[insert] Result:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 26 
+
+TIMESTAMP 27
+
+[insert] Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 26 
+[insert] Result:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 26 27 
+
+TIMESTAMP 28
+
+[equal-split] Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 26 27 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 26 27 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 [20] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 
+LEAF Node 0x559c412ce7b0:
+	21 22 23 24 25 26 27 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 [21] 
+[equal-split] Result:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 
+LEAF Node 0x559c412ce7b0:
+	21 22 23 24 25 26 27 
+
+[insert] Start:
+LEAF Node 0x559c412ce7b0:
+	21 22 23 24 25 26 27 
+[insert] Result:
+LEAF Node 0x559c412ce7b0:
+	21 22 23 24 25 26 27 28 
+
+TIMESTAMP 29
+
+[equal-split] Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 
+LEAF Node 0x559c412ce7b0:
+	21 22 23 24 25 26 27 28 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 
+LEAF Node 0x559c412ce7b0:
+	21 22 23 24 25 26 27 28 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 [21] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 21 
+LEAF Node 0x559c412ce7b0:
+	22 23 24 25 26 27 28 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 [22] 
+[equal-split] Result:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 21 
+LEAF Node 0x559c412ce7b0:
+	22 23 24 25 26 27 28 
+
+[insert] Start:
+LEAF Node 0x559c412ce7b0:
+	22 23 24 25 26 27 28 
+[insert] Result:
+LEAF Node 0x559c412ce7b0:
+	22 23 24 25 26 27 28 29 
+
+TIMESTAMP 30
+
+[2-3 split] Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 21 
+LEAF Node 0x559c412ce7b0:
+	22 23 24 25 26 27 28 29 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 20 21 
+LEAF Node 0x559c412ce7b0:
+	22 23 24 25 26 27 28 29 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 [22] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ce7b0:
+	22 23 24 
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 22 [25] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 [20] 25 
+[2-3 split] Result:
+LEAF Node 0x559c412ce720:
+	15 16 17 18 19 
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 
+
+[insert] Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 
+[insert] Result:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 
+
+TIMESTAMP 31
+
+[insert] Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 
+[insert] Result:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 31 
+
+TIMESTAMP 32
+
+[insert] Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 31 
+[insert] Result:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 31 32 
+
+TIMESTAMP 33
+
+[equal-split] Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 31 32 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 31 32 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 [25] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 
+LEAF Node 0x559c412ce840:
+	26 27 28 29 30 31 32 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 [26] 
+[equal-split] Result:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 
+LEAF Node 0x559c412ce840:
+	26 27 28 29 30 31 32 
+
+[insert] Start:
+LEAF Node 0x559c412ce840:
+	26 27 28 29 30 31 32 
+[insert] Result:
+LEAF Node 0x559c412ce840:
+	26 27 28 29 30 31 32 33 
+
+TIMESTAMP 34
+
+[equal-split] Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 
+LEAF Node 0x559c412ce840:
+	26 27 28 29 30 31 32 33 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 
+LEAF Node 0x559c412ce840:
+	26 27 28 29 30 31 32 33 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 [26] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 26 
+LEAF Node 0x559c412ce840:
+	27 28 29 30 31 32 33 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 [27] 
+[equal-split] Result:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 26 
+LEAF Node 0x559c412ce840:
+	27 28 29 30 31 32 33 
+
+[insert] Start:
+LEAF Node 0x559c412ce840:
+	27 28 29 30 31 32 33 
+[insert] Result:
+LEAF Node 0x559c412ce840:
+	27 28 29 30 31 32 33 34 
+
+TIMESTAMP 35
+
+[2-3 split] Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 26 
+LEAF Node 0x559c412ce840:
+	27 28 29 30 31 32 33 34 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 25 26 
+LEAF Node 0x559c412ce840:
+	27 28 29 30 31 32 33 34 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 [27] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ce840:
+	27 28 29 
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 27 [30] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 [25] 30 
+[2-3 split] Result:
+LEAF Node 0x559c412ce7b0:
+	20 21 22 23 24 
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 
+
+[insert] Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 
+[insert] Result:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 
+
+TIMESTAMP 36
+
+[insert] Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 
+[insert] Result:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 36 
+
+TIMESTAMP 37
+
+[insert] Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 36 
+[insert] Result:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 36 37 
+
+TIMESTAMP 38
+
+[equal-split] Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 36 37 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 36 37 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 [30] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 
+LEAF Node 0x559c412ce8d0:
+	31 32 33 34 35 36 37 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 [31] 
+[equal-split] Result:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 
+LEAF Node 0x559c412ce8d0:
+	31 32 33 34 35 36 37 
+
+[insert] Start:
+LEAF Node 0x559c412ce8d0:
+	31 32 33 34 35 36 37 
+[insert] Result:
+LEAF Node 0x559c412ce8d0:
+	31 32 33 34 35 36 37 38 
+
+TIMESTAMP 39
+
+[equal-split] Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 
+LEAF Node 0x559c412ce8d0:
+	31 32 33 34 35 36 37 38 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 
+LEAF Node 0x559c412ce8d0:
+	31 32 33 34 35 36 37 38 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 [31] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 31 
+LEAF Node 0x559c412ce8d0:
+	32 33 34 35 36 37 38 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 [32] 
+[equal-split] Result:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 31 
+LEAF Node 0x559c412ce8d0:
+	32 33 34 35 36 37 38 
+
+[insert] Start:
+LEAF Node 0x559c412ce8d0:
+	32 33 34 35 36 37 38 
+[insert] Result:
+LEAF Node 0x559c412ce8d0:
+	32 33 34 35 36 37 38 39 
+
+TIMESTAMP 40
+
+[2-3 split] Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 31 
+LEAF Node 0x559c412ce8d0:
+	32 33 34 35 36 37 38 39 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 30 31 
+LEAF Node 0x559c412ce8d0:
+	32 33 34 35 36 37 38 39 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 [32] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ce8d0:
+	32 33 34 
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 32 [35] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 [30] 35 
+[2-3 split] Result:
+LEAF Node 0x559c412ce840:
+	25 26 27 28 29 
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 
+
+[insert] Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 
+[insert] Result:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 
+
+TIMESTAMP 41
+
+[insert] Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 
+[insert] Result:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 41 
+
+TIMESTAMP 42
+
+[insert] Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 41 
+[insert] Result:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 41 42 
+
+TIMESTAMP 43
+
+[equal-split] Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 41 42 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 41 42 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 30 [35] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 
+LEAF Node 0x559c412ce960:
+	36 37 38 39 40 41 42 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 30 [36] 
+[equal-split] Result:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 
+LEAF Node 0x559c412ce960:
+	36 37 38 39 40 41 42 
+
+[insert] Start:
+LEAF Node 0x559c412ce960:
+	36 37 38 39 40 41 42 
+[insert] Result:
+LEAF Node 0x559c412ce960:
+	36 37 38 39 40 41 42 43 
+
+TIMESTAMP 44
+
+[equal-split] Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 
+LEAF Node 0x559c412ce960:
+	36 37 38 39 40 41 42 43 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 
+LEAF Node 0x559c412ce960:
+	36 37 38 39 40 41 42 43 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 30 [36] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 36 
+LEAF Node 0x559c412ce960:
+	37 38 39 40 41 42 43 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 30 [37] 
+[equal-split] Result:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 36 
+LEAF Node 0x559c412ce960:
+	37 38 39 40 41 42 43 
+
+[insert] Start:
+LEAF Node 0x559c412ce960:
+	37 38 39 40 41 42 43 
+[insert] Result:
+LEAF Node 0x559c412ce960:
+	37 38 39 40 41 42 43 44 
+
+TIMESTAMP 45
+
+[2-3 split] Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 36 
+LEAF Node 0x559c412ce960:
+	37 38 39 40 41 42 43 44 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 35 36 
+LEAF Node 0x559c412ce960:
+	37 38 39 40 41 42 43 44 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 30 [37] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ce960:
+	37 38 39 
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 30 37 [40] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 
+INDEX Parent Node 0x559c412ce570:
+	5 10 15 20 25 30 [35] 40 
+[2-3 split] Result:
+LEAF Node 0x559c412ce8d0:
+	30 31 32 33 34 
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 
+
+[insert] Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 
+[insert] Result:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 
+
+TIMESTAMP 46
+
+[1-2 split root] Start:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 30 35 40 
+[1-2 split root] Result:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 
+INDEX Node 0x559c412ceb10:
+	30 35 40 
+INDEX Parent Node 0x559c412cea80:
+	[25] 
+
+[insert] Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 
+[insert] Result:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 46 
+
+TIMESTAMP 47
+
+[insert] Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 46 
+[insert] Result:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 46 47 
+
+TIMESTAMP 48
+
+[equal-split] Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 46 47 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 46 47 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 [40] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 
+LEAF Node 0x559c412ce9f0:
+	41 42 43 44 45 46 47 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 [41] 
+[equal-split] Result:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 
+LEAF Node 0x559c412ce9f0:
+	41 42 43 44 45 46 47 
+
+[insert] Start:
+LEAF Node 0x559c412ce9f0:
+	41 42 43 44 45 46 47 
+[insert] Result:
+LEAF Node 0x559c412ce9f0:
+	41 42 43 44 45 46 47 48 
+
+TIMESTAMP 49
+
+[equal-split] Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 
+LEAF Node 0x559c412ce9f0:
+	41 42 43 44 45 46 47 48 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 
+LEAF Node 0x559c412ce9f0:
+	41 42 43 44 45 46 47 48 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 [41] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 41 
+LEAF Node 0x559c412ce9f0:
+	42 43 44 45 46 47 48 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 [42] 
+[equal-split] Result:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 41 
+LEAF Node 0x559c412ce9f0:
+	42 43 44 45 46 47 48 
+
+[insert] Start:
+LEAF Node 0x559c412ce9f0:
+	42 43 44 45 46 47 48 
+[insert] Result:
+LEAF Node 0x559c412ce9f0:
+	42 43 44 45 46 47 48 49 
+
+TIMESTAMP 50
+
+[2-3 split] Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 41 
+LEAF Node 0x559c412ce9f0:
+	42 43 44 45 46 47 48 49 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 40 41 
+LEAF Node 0x559c412ce9f0:
+	42 43 44 45 46 47 48 49 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 [42] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ce9f0:
+	42 43 44 
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 42 [45] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 [40] 45 
+[2-3 split] Result:
+LEAF Node 0x559c412ce960:
+	35 36 37 38 39 
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 
+
+[insert] Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 
+[insert] Result:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 
+
+TIMESTAMP 51
+
+[insert] Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 
+[insert] Result:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 51 
+
+TIMESTAMP 52
+
+[insert] Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 51 
+[insert] Result:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 51 52 
+
+TIMESTAMP 53
+
+[equal-split] Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 51 52 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 51 52 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 [45] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 
+LEAF Node 0x559c412ceba0:
+	46 47 48 49 50 51 52 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 [46] 
+[equal-split] Result:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 
+LEAF Node 0x559c412ceba0:
+	46 47 48 49 50 51 52 
+
+[insert] Start:
+LEAF Node 0x559c412ceba0:
+	46 47 48 49 50 51 52 
+[insert] Result:
+LEAF Node 0x559c412ceba0:
+	46 47 48 49 50 51 52 53 
+
+TIMESTAMP 54
+
+[equal-split] Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 
+LEAF Node 0x559c412ceba0:
+	46 47 48 49 50 51 52 53 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 
+LEAF Node 0x559c412ceba0:
+	46 47 48 49 50 51 52 53 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 [46] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 46 
+LEAF Node 0x559c412ceba0:
+	47 48 49 50 51 52 53 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 [47] 
+[equal-split] Result:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 46 
+LEAF Node 0x559c412ceba0:
+	47 48 49 50 51 52 53 
+
+[insert] Start:
+LEAF Node 0x559c412ceba0:
+	47 48 49 50 51 52 53 
+[insert] Result:
+LEAF Node 0x559c412ceba0:
+	47 48 49 50 51 52 53 54 
+
+TIMESTAMP 55
+
+[2-3 split] Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 46 
+LEAF Node 0x559c412ceba0:
+	47 48 49 50 51 52 53 54 
+
+<redistribute> Start:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 45 46 
+LEAF Node 0x559c412ceba0:
+	47 48 49 50 51 52 53 54 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 [47] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ceba0:
+	47 48 49 
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 47 [50] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 [45] 50 
+[2-3 split] Result:
+LEAF Node 0x559c412ce9f0:
+	40 41 42 43 44 
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 
+
+[insert] Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 
+[insert] Result:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 
+
+TIMESTAMP 56
+
+[insert] Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 
+[insert] Result:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 56 
+
+TIMESTAMP 57
+
+[insert] Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 56 
+[insert] Result:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 56 57 
+
+TIMESTAMP 58
+
+[equal-split] Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 56 57 
+
+<redistribute> Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 56 57 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 [50] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 
+LEAF Node 0x559c412cec30:
+	51 52 53 54 55 56 57 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 [51] 
+[equal-split] Result:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 
+LEAF Node 0x559c412cec30:
+	51 52 53 54 55 56 57 
+
+[insert] Start:
+LEAF Node 0x559c412cec30:
+	51 52 53 54 55 56 57 
+[insert] Result:
+LEAF Node 0x559c412cec30:
+	51 52 53 54 55 56 57 58 
+
+TIMESTAMP 59
+
+[equal-split] Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 
+LEAF Node 0x559c412cec30:
+	51 52 53 54 55 56 57 58 
+
+<redistribute> Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 
+LEAF Node 0x559c412cec30:
+	51 52 53 54 55 56 57 58 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 [51] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 51 
+LEAF Node 0x559c412cec30:
+	52 53 54 55 56 57 58 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 [52] 
+[equal-split] Result:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 51 
+LEAF Node 0x559c412cec30:
+	52 53 54 55 56 57 58 
+
+[insert] Start:
+LEAF Node 0x559c412cec30:
+	52 53 54 55 56 57 58 
+[insert] Result:
+LEAF Node 0x559c412cec30:
+	52 53 54 55 56 57 58 59 
+
+TIMESTAMP 60
+
+[2-3 split] Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 51 
+LEAF Node 0x559c412cec30:
+	52 53 54 55 56 57 58 59 
+
+<redistribute> Start:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 50 51 
+LEAF Node 0x559c412cec30:
+	52 53 54 55 56 57 58 59 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 [52] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412cec30:
+	52 53 54 
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 52 [55] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 [50] 55 
+[2-3 split] Result:
+LEAF Node 0x559c412ceba0:
+	45 46 47 48 49 
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 
+
+[insert] Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 
+[insert] Result:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 
+
+TIMESTAMP 61
+
+[insert] Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 
+[insert] Result:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 61 
+
+TIMESTAMP 62
+
+[insert] Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 61 
+[insert] Result:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 61 62 
+
+TIMESTAMP 63
+
+[equal-split] Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 61 62 
+
+<redistribute> Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 61 62 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 [55] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 
+LEAF Node 0x559c412cecc0:
+	56 57 58 59 60 61 62 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 [56] 
+[equal-split] Result:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 
+LEAF Node 0x559c412cecc0:
+	56 57 58 59 60 61 62 
+
+[insert] Start:
+LEAF Node 0x559c412cecc0:
+	56 57 58 59 60 61 62 
+[insert] Result:
+LEAF Node 0x559c412cecc0:
+	56 57 58 59 60 61 62 63 
+
+TIMESTAMP 64
+
+[equal-split] Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 
+LEAF Node 0x559c412cecc0:
+	56 57 58 59 60 61 62 63 
+
+<redistribute> Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 
+LEAF Node 0x559c412cecc0:
+	56 57 58 59 60 61 62 63 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 [56] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 56 
+LEAF Node 0x559c412cecc0:
+	57 58 59 60 61 62 63 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 [57] 
+[equal-split] Result:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 56 
+LEAF Node 0x559c412cecc0:
+	57 58 59 60 61 62 63 
+
+[insert] Start:
+LEAF Node 0x559c412cecc0:
+	57 58 59 60 61 62 63 
+[insert] Result:
+LEAF Node 0x559c412cecc0:
+	57 58 59 60 61 62 63 64 
+
+TIMESTAMP 65
+
+[2-3 split] Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 56 
+LEAF Node 0x559c412cecc0:
+	57 58 59 60 61 62 63 64 
+
+<redistribute> Start:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 55 56 
+LEAF Node 0x559c412cecc0:
+	57 58 59 60 61 62 63 64 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 [57] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412cecc0:
+	57 58 59 
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 57 [60] 
+
+<redistribute> Result:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 [55] 60 
+[2-3 split] Result:
+LEAF Node 0x559c412cec30:
+	50 51 52 53 54 
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 
+
+[insert] Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 
+[insert] Result:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 
+
+TIMESTAMP 66
+
+[insert] Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 
+[insert] Result:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 66 
+
+TIMESTAMP 67
+
+[insert] Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 66 
+[insert] Result:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 66 67 
+
+TIMESTAMP 68
+
+[equal-split] Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 66 67 
+
+<redistribute> Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 66 67 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 55 [60] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 
+LEAF Node 0x559c412ced50:
+	61 62 63 64 65 66 67 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 55 [61] 
+[equal-split] Result:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 
+LEAF Node 0x559c412ced50:
+	61 62 63 64 65 66 67 
+
+[insert] Start:
+LEAF Node 0x559c412ced50:
+	61 62 63 64 65 66 67 
+[insert] Result:
+LEAF Node 0x559c412ced50:
+	61 62 63 64 65 66 67 68 
+
+TIMESTAMP 69
+
+[equal-split] Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 
+LEAF Node 0x559c412ced50:
+	61 62 63 64 65 66 67 68 
+
+<redistribute> Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 
+LEAF Node 0x559c412ced50:
+	61 62 63 64 65 66 67 68 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 55 [61] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 61 
+LEAF Node 0x559c412ced50:
+	62 63 64 65 66 67 68 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 55 [62] 
+[equal-split] Result:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 61 
+LEAF Node 0x559c412ced50:
+	62 63 64 65 66 67 68 
+
+[insert] Start:
+LEAF Node 0x559c412ced50:
+	62 63 64 65 66 67 68 
+[insert] Result:
+LEAF Node 0x559c412ced50:
+	62 63 64 65 66 67 68 69 
+
+TIMESTAMP 70
+
+[2-3 split] Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 61 
+LEAF Node 0x559c412ced50:
+	62 63 64 65 66 67 68 69 
+
+<redistribute> Start:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 60 61 
+LEAF Node 0x559c412ced50:
+	62 63 64 65 66 67 68 69 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 55 [62] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412ced50:
+	62 63 64 
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 55 62 [65] 
+
+<redistribute> Result:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 
+INDEX Parent Node 0x559c412ceb10:
+	30 35 40 45 50 55 [60] 65 
+[2-3 split] Result:
+LEAF Node 0x559c412cecc0:
+	55 56 57 58 59 
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 
+
+[insert] Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 
+[insert] Result:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 
+
+TIMESTAMP 71
+
+[equal-split] Start:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 
+INDEX Node 0x559c412ceb10:
+	30 35 40 45 50 55 60 65 
+
+<redistribute> Start:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 
+INDEX Node 0x559c412ceb10:
+	30 35 40 45 50 55 60 65 
+INDEX Parent Node 0x559c412cea80:
+	[25] 
+
+<redistribute> Start:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 30 
+INDEX Node 0x559c412ceb10:
+	35 40 45 50 55 60 
+INDEX Parent Node 0x559c412cea80:
+	[35] 
+[equal-split] Result:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 30 
+INDEX Node 0x559c412ceb10:
+	35 40 45 50 55 60 
+
+[insert] Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 
+[insert] Result:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 71 
+
+TIMESTAMP 72
+
+[insert] Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 71 
+[insert] Result:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 71 72 
+
+TIMESTAMP 73
+
+[equal-split] Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 71 72 
+
+<redistribute> Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 71 72 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 [60] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 
+LEAF Node 0x559c412cede0:
+	66 67 68 69 70 71 72 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 [66] 
+[equal-split] Result:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 
+LEAF Node 0x559c412cede0:
+	66 67 68 69 70 71 72 
+
+[insert] Start:
+LEAF Node 0x559c412cede0:
+	66 67 68 69 70 71 72 
+[insert] Result:
+LEAF Node 0x559c412cede0:
+	66 67 68 69 70 71 72 73 
+
+TIMESTAMP 74
+
+[equal-split] Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 
+LEAF Node 0x559c412cede0:
+	66 67 68 69 70 71 72 73 
+
+<redistribute> Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 
+LEAF Node 0x559c412cede0:
+	66 67 68 69 70 71 72 73 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 [66] 
+
+<redistribute> Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 66 
+LEAF Node 0x559c412cede0:
+	67 68 69 70 71 72 73 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 [67] 
+[equal-split] Result:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 66 
+LEAF Node 0x559c412cede0:
+	67 68 69 70 71 72 73 
+
+[insert] Start:
+LEAF Node 0x559c412cede0:
+	67 68 69 70 71 72 73 
+[insert] Result:
+LEAF Node 0x559c412cede0:
+	67 68 69 70 71 72 73 74 
+
+TIMESTAMP 75
+
+[2-3 split] Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 66 
+LEAF Node 0x559c412cede0:
+	67 68 69 70 71 72 73 74 
+
+<redistribute> Start:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 65 66 
+LEAF Node 0x559c412cede0:
+	67 68 69 70 71 72 73 74 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 [67] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412cede0:
+	67 68 69 
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 67 [70] 
+
+<redistribute> Result:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 [65] 70 
+[2-3 split] Result:
+LEAF Node 0x559c412ced50:
+	60 61 62 63 64 
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 
+
+[insert] Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 
+[insert] Result:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 
+
+TIMESTAMP 76
+
+[insert] Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 
+[insert] Result:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 76 
+
+TIMESTAMP 77
+
+[insert] Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 76 
+[insert] Result:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 76 77 
+
+TIMESTAMP 78
+
+[equal-split] Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 76 77 
+
+<redistribute> Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 76 77 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [70] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 
+LEAF Node 0x559c412cee70:
+	71 72 73 74 75 76 77 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [71] 
+[equal-split] Result:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 
+LEAF Node 0x559c412cee70:
+	71 72 73 74 75 76 77 
+
+[insert] Start:
+LEAF Node 0x559c412cee70:
+	71 72 73 74 75 76 77 
+[insert] Result:
+LEAF Node 0x559c412cee70:
+	71 72 73 74 75 76 77 78 
+
+TIMESTAMP 79
+
+[equal-split] Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 
+LEAF Node 0x559c412cee70:
+	71 72 73 74 75 76 77 78 
+
+<redistribute> Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 
+LEAF Node 0x559c412cee70:
+	71 72 73 74 75 76 77 78 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [71] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 71 
+LEAF Node 0x559c412cee70:
+	72 73 74 75 76 77 78 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [72] 
+[equal-split] Result:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 71 
+LEAF Node 0x559c412cee70:
+	72 73 74 75 76 77 78 
+
+[insert] Start:
+LEAF Node 0x559c412cee70:
+	72 73 74 75 76 77 78 
+[insert] Result:
+LEAF Node 0x559c412cee70:
+	72 73 74 75 76 77 78 79 
+
+TIMESTAMP 80
+
+[2-3 split] Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 71 
+LEAF Node 0x559c412cee70:
+	72 73 74 75 76 77 78 79 
+
+<redistribute> Start:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 70 71 
+LEAF Node 0x559c412cee70:
+	72 73 74 75 76 77 78 79 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [72] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412cee70:
+	72 73 74 
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 72 [75] 
+
+<redistribute> Result:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [70] 75 
+[2-3 split] Result:
+LEAF Node 0x559c412cede0:
+	65 66 67 68 69 
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 
+
+[insert] Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 
+[insert] Result:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 
+
+TIMESTAMP 81
+
+[equal-split] Start:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 30 
+INDEX Node 0x559c412ceb10:
+	35 40 45 50 55 65 70 75 
+
+<redistribute> Start:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 30 
+INDEX Node 0x559c412ceb10:
+	35 40 45 50 55 65 70 75 
+INDEX Parent Node 0x559c412cea80:
+	[35] 
+
+<redistribute> Start:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 30 35 
+INDEX Node 0x559c412ceb10:
+	35 40 45 50 55 65 70 
+INDEX Parent Node 0x559c412cea80:
+	[35] 
+[equal-split] Result:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 30 35 
+INDEX Node 0x559c412ceb10:
+	35 40 45 50 55 65 70 
+
+[insert] Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 
+[insert] Result:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 81 
+
+TIMESTAMP 82
+
+[insert] Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 81 
+[insert] Result:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 81 82 
+
+TIMESTAMP 83
+
+[equal-split] Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 81 82 
+
+<redistribute> Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 81 82 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [70] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 
+LEAF Node 0x559c412cef00:
+	76 77 78 79 80 81 82 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [76] 
+[equal-split] Result:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 
+LEAF Node 0x559c412cef00:
+	76 77 78 79 80 81 82 
+
+[insert] Start:
+LEAF Node 0x559c412cef00:
+	76 77 78 79 80 81 82 
+[insert] Result:
+LEAF Node 0x559c412cef00:
+	76 77 78 79 80 81 82 83 
+
+TIMESTAMP 84
+
+[equal-split] Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 
+LEAF Node 0x559c412cef00:
+	76 77 78 79 80 81 82 83 
+
+<redistribute> Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 
+LEAF Node 0x559c412cef00:
+	76 77 78 79 80 81 82 83 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [76] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 76 
+LEAF Node 0x559c412cef00:
+	77 78 79 80 81 82 83 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [77] 
+[equal-split] Result:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 76 
+LEAF Node 0x559c412cef00:
+	77 78 79 80 81 82 83 
+
+[insert] Start:
+LEAF Node 0x559c412cef00:
+	77 78 79 80 81 82 83 
+[insert] Result:
+LEAF Node 0x559c412cef00:
+	77 78 79 80 81 82 83 84 
+
+TIMESTAMP 85
+
+[2-3 split] Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 76 
+LEAF Node 0x559c412cef00:
+	77 78 79 80 81 82 83 84 
+
+<redistribute> Start:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 75 76 
+LEAF Node 0x559c412cef00:
+	77 78 79 80 81 82 83 84 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [77] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412cef00:
+	77 78 79 
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 77 [80] 
+
+<redistribute> Result:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 
+INDEX Parent Node 0x559c412ceb10:
+	35 40 45 50 55 65 [75] 80 
+[2-3 split] Result:
+LEAF Node 0x559c412cee70:
+	70 71 72 73 74 
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 
+
+[insert] Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 
+[insert] Result:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 
+
+TIMESTAMP 86
+
+[2-3 split] Start:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 30 35 
+INDEX Node 0x559c412ceb10:
+	35 40 45 50 55 65 75 80 
+
+<redistribute> Start:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 30 35 
+INDEX Node 0x559c412ceb10:
+	35 40 45 50 55 65 75 
+INDEX Parent Node 0x559c412cea80:
+	[35] 80 
+
+<redistribute> Phase1:
+INDEX Node 0x559c412ceb10:
+	35 40 45 
+INDEX Node 0x559c412cf020:
+	50 55 65 80 
+INDEX Parent Node 0x559c412cea80:
+	35 [50] 
+
+<redistribute> Result:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 
+INDEX Node 0x559c412ceb10:
+	30 35 35 40 45 
+INDEX Parent Node 0x559c412cea80:
+	[30] 50 
+[2-3 split] Result:
+INDEX Node 0x559c412ce570:
+	5 10 15 20 25 
+INDEX Node 0x559c412ceb10:
+	30 35 35 40 45 
+INDEX Node 0x559c412cf020:
+	50 55 65 80 
+
+[insert] Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 
+[insert] Result:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 86 
+
+TIMESTAMP 87
+
+[insert] Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 86 
+[insert] Result:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 86 87 
+
+TIMESTAMP 88
+
+[equal-split] Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 86 87 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 86 87 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 [80] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 
+LEAF Node 0x559c412cef90:
+	81 82 83 84 85 86 87 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 [81] 
+[equal-split] Result:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 
+LEAF Node 0x559c412cef90:
+	81 82 83 84 85 86 87 
+
+[insert] Start:
+LEAF Node 0x559c412cef90:
+	81 82 83 84 85 86 87 
+[insert] Result:
+LEAF Node 0x559c412cef90:
+	81 82 83 84 85 86 87 88 
+
+TIMESTAMP 89
+
+[equal-split] Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 
+LEAF Node 0x559c412cef90:
+	81 82 83 84 85 86 87 88 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 
+LEAF Node 0x559c412cef90:
+	81 82 83 84 85 86 87 88 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 [81] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 81 
+LEAF Node 0x559c412cef90:
+	82 83 84 85 86 87 88 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 [82] 
+[equal-split] Result:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 81 
+LEAF Node 0x559c412cef90:
+	82 83 84 85 86 87 88 
+
+[insert] Start:
+LEAF Node 0x559c412cef90:
+	82 83 84 85 86 87 88 
+[insert] Result:
+LEAF Node 0x559c412cef90:
+	82 83 84 85 86 87 88 89 
+
+TIMESTAMP 90
+
+[2-3 split] Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 81 
+LEAF Node 0x559c412cef90:
+	82 83 84 85 86 87 88 89 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 80 81 
+LEAF Node 0x559c412cef90:
+	82 83 84 85 86 87 88 89 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 [82] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412cef90:
+	82 83 84 
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 82 [85] 
+
+<redistribute> Result:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 [80] 85 
+[2-3 split] Result:
+LEAF Node 0x559c412cef00:
+	75 76 77 78 79 
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 
+
+[insert] Start:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 
+[insert] Result:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 
+
+TIMESTAMP 91
+
+[insert] Start:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 
+[insert] Result:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 91 
+
+TIMESTAMP 92
+
+[insert] Start:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 91 
+[insert] Result:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 91 92 
+
+TIMESTAMP 93
+
+[equal-split] Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 91 92 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 91 92 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 [85] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 
+LEAF Node 0x559c412cf0b0:
+	86 87 88 89 90 91 92 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 [86] 
+[equal-split] Result:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 
+LEAF Node 0x559c412cf0b0:
+	86 87 88 89 90 91 92 
+
+[insert] Start:
+LEAF Node 0x559c412cf0b0:
+	86 87 88 89 90 91 92 
+[insert] Result:
+LEAF Node 0x559c412cf0b0:
+	86 87 88 89 90 91 92 93 
+
+TIMESTAMP 94
+
+[equal-split] Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 
+LEAF Node 0x559c412cf0b0:
+	86 87 88 89 90 91 92 93 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 
+LEAF Node 0x559c412cf0b0:
+	86 87 88 89 90 91 92 93 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 [86] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 86 
+LEAF Node 0x559c412cf0b0:
+	87 88 89 90 91 92 93 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 [87] 
+[equal-split] Result:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 86 
+LEAF Node 0x559c412cf0b0:
+	87 88 89 90 91 92 93 
+
+[insert] Start:
+LEAF Node 0x559c412cf0b0:
+	87 88 89 90 91 92 93 
+[insert] Result:
+LEAF Node 0x559c412cf0b0:
+	87 88 89 90 91 92 93 94 
+
+TIMESTAMP 95
+
+[2-3 split] Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 86 
+LEAF Node 0x559c412cf0b0:
+	87 88 89 90 91 92 93 94 
+
+<redistribute> Start:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 85 86 
+LEAF Node 0x559c412cf0b0:
+	87 88 89 90 91 92 93 94 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 [87] 
+
+<redistribute> Phase1:
+LEAF Node 0x559c412cf0b0:
+	87 88 89 
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 87 [90] 
+
+<redistribute> Result:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 [85] 90 
+[2-3 split] Result:
+LEAF Node 0x559c412cef90:
+	80 81 82 83 84 
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 
+
+[insert] Start:
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 
+[insert] Result:
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 95 
+
+TIMESTAMP 96
+
+[insert] Start:
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 95 
+[insert] Result:
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 95 96 
+
+TIMESTAMP 97
+
+[insert] Start:
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 95 96 
+[insert] Result:
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 95 96 97 
+
+TIMESTAMP 98
+
+[equal-split] Start:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 95 96 97 
+
+<redistribute> Start:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 
+LEAF Node 0x559c412cf140:
+	90 91 92 93 94 95 96 97 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 85 [90] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 
+LEAF Node 0x559c412cf140:
+	91 92 93 94 95 96 97 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 85 [91] 
+[equal-split] Result:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 
+LEAF Node 0x559c412cf140:
+	91 92 93 94 95 96 97 
+
+[insert] Start:
+LEAF Node 0x559c412cf140:
+	91 92 93 94 95 96 97 
+[insert] Result:
+LEAF Node 0x559c412cf140:
+	91 92 93 94 95 96 97 98 
+
+TIMESTAMP 99
+
+[equal-split] Start:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 
+LEAF Node 0x559c412cf140:
+	91 92 93 94 95 96 97 98 
+
+<redistribute> Start:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 
+LEAF Node 0x559c412cf140:
+	91 92 93 94 95 96 97 98 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 85 [91] 
+
+<redistribute> Start:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 91 
+LEAF Node 0x559c412cf140:
+	92 93 94 95 96 97 98 
+INDEX Parent Node 0x559c412cf020:
+	50 55 65 80 85 [92] 
+[equal-split] Result:
+LEAF Node 0x559c412cf0b0:
+	85 86 87 88 89 90 91 
+LEAF Node 0x559c412cf140:
+	92 93 94 95 96 97 98 
+
+[insert] Start:
+LEAF Node 0x559c412cf140:
+	92 93 94 95 96 97 98 
+[insert] Result:
+LEAF Node 0x559c412cf140:
+	92 93 94 95 96 97 98 99 
+
+[TRAVERSE FULL]
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 All keys searched 100.
+
+Try search: 55.
+ROUND 1 FINISHED.
+FAILED.
