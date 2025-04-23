@@ -75,7 +75,8 @@ private:
   static inline bool overflow_(const bstar_node *n) noexcept {
     return n->key_cnt >= MAX_KEYS;
   }
-  static inline bool will_overflow_(const bstar_node *a, const bstar_node *b) noexcept {
+  static inline bool average_will_overflow_(const bstar_node *a,
+                                            const bstar_node *b) noexcept {
     return ceil_half(a->key_cnt, b->key_cnt) >= MAX_KEYS;
   }
 
@@ -291,7 +292,8 @@ private:
       std::swap(idx1, idx2);
       std::swap(node1, node2);
     }
-    if (!will_overflow_(node1, node2) && !will_underflow_(node1, node2)) {
+    if (!average_will_overflow_(node1, node2) &&
+        !will_underflow_(node1, node2)) {
       do_equal_split_(node1, node2, parent, idx1);
       return;
     }
