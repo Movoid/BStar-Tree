@@ -1,13 +1,13 @@
 #include <bits/stdc++.h>
 
-// each node has max of `M` branches,
-// for index node, `M - 1` keys,
-// for leaf node, `M` keys.
-
 /*================================================*\
 
   B+* tree.
   No support for duplicate mainkey.
+
+  each node has max of `M` branches,
+  for index node, `M - 1` keys,
+  for leaf node, `M` keys.
 
 \*================================================*/
 
@@ -70,22 +70,12 @@ public:
   static constexpr std::size_t MIN_KEYS = (2 * (MAX_KEYS) + 2) / 3 - 1; // ceil
 
 private:
-  // ceil((a + b) / 2)
-  // static constexpr std::size_t ceil_half(std::size_t a,
-  //                                        std::size_t b) noexcept {
-  //   return (a >> 1) + (b >> 1) + ((a & 1) + (b & 1) + 1) / 2;
-  // }
-
   inline bool overflow_(const bstar_node *n) noexcept {
     return n->key_cnt > MAX_KEYS;
   }
   inline bool average_overflow_(const bstar_node *a,
                                 const bstar_node *b) noexcept {
-    return ((a->key_cnt + b->key_cnt + 1) / 2) > MAX_KEYS;
-  }
-  inline bool average_overflow_3_(const bstar_node *a, const bstar_node *b,
-                                  const bstar_node *c) noexcept {
-    return ((a->key_cnt + b->key_cnt + c->key_cnt + 2) / 3) > MAX_KEYS;
+    return std::ceil((a->key_cnt + b->key_cnt + 1) / 2) > MAX_KEYS;
   }
 
   inline bool underflow_(const bstar_node *n) noexcept {
@@ -93,40 +83,7 @@ private:
   }
   inline bool average_underflow_(const bstar_node *a,
                                  const bstar_node *b) noexcept {
-    return ((a->key_cnt + b->key_cnt + 1) / 2) < MIN_KEYS;
-  }
-  inline bool average_underflow_3_(const bstar_node *a, const bstar_node *b,
-                                   const bstar_node *c) noexcept {
-    return ((a->key_cnt + b->key_cnt + c->key_cnt + 2) / 3) < MIN_KEYS;
-  }
-
-  void DEBUG_print_node(bstar_node *node) {
-    printf("%s Node %p:\n", (node->is_leaf ? "LEAF" : "INDEX"), node);
-    printf("\t");
-    if (!node) {
-      printf("<NULL>");
-    }
-    for (int i = 0; i < node->key_cnt; i++) {
-      printf("%d ", node->key[i]);
-    }
-    puts("");
-  }
-
-  void DEBUG_print_parent(bstar_node *node, std::size_t idx1,
-                          std::size_t idx2) {
-    printf("%s Parent Node %p:\n", (node->is_leaf ? "LEAF" : "INDEX"), node);
-    printf("\t");
-    if (!node) {
-      printf("<NULL>");
-    }
-    for (int i = 0; i < node->key_cnt; i++) {
-      if (i == idx1 || i == idx2) {
-        printf("[%d] ", node->key[i]);
-      } else {
-        printf("%d ", node->key[i]);
-      }
-    }
-    puts("");
+    return std::floor((a->key_cnt + b->key_cnt) / 2) < MIN_KEYS;
   }
 
   // standard balance, parent != nullptr
@@ -238,11 +195,7 @@ private:
   void modify_key_in_parent_(bstar_node *node1, bstar_node *node2,
                              bstar_node *parent, std::size_t idx1,
                              const KeyType &new_key) {
-    if (node1->is_leaf) {
-      parent->key[idx1] = node2->key[0];
-    } else {
-      parent->key[idx1] = new_key;
-    }
+    parent->key[idx1] = new_key;
     parent->idx.key_ptr[idx1] = node1;
     parent->idx.key_ptr[idx1 + 1] = node2;
   }
@@ -257,8 +210,6 @@ private:
   }
 
   void do_1_2_split_root_() {
-    printf("\n[1-2 split root] Start:\n");
-    DEBUG_print_node(root);
     bstar_node *new_root{new bstar_node{.key_cnt = 0, .is_leaf = false}};
     bstar_node *node2{new bstar_node{.key_cnt = 0, .is_leaf = root->is_leaf}};
     if (root->is_leaf) {
@@ -283,10 +234,6 @@ private:
     }
     new_root->idx.key_ptr[0] = root;
     new_root->idx.key_ptr[1] = node2;
-    printf("[1-2 split root] Result:\n");
-    DEBUG_print_node(root);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(new_root, 0, 1);
     root = new_root;
   }
 
@@ -327,10 +274,6 @@ private:
 
   void do_2_3_split_(bstar_node *node1, bstar_node *node2, bstar_node *parent,
                      std::size_t idx1, std::size_t idx2) {
-    printf("\n[2-3 split] Start:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(parent, idx1, idx2);
     // first fill node3
     bstar_node *node3{new bstar_node{.key_cnt = 0, .is_leaf = node1->is_leaf}};
     std::size_t total{node1->key_cnt + node2->key_cnt};
@@ -346,21 +289,12 @@ private:
     std::size_t need1{(total + 2) / 3};
     std::size_t need2{(total + 1) / 3};
     std::size_t need3{total / 3};
-    printf("\n<redistribute> Start:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(parent, idx1, parent->key_cnt);
     // experiment
 
     // the need sum is node2.key_cnt
     KeyType new_key2{redistribute_keys_(node2, node3, node2->key_cnt - need3,
                                         need3, parent, idx2)};
 
-    //
-    printf("\n<redistribute> Phase1:\n");
-    DEBUG_print_node(node2);
-    DEBUG_print_node(node3);
-    DEBUG_print_parent(parent, idx2, parent->key_cnt);
     KeyType new_key1{
         redistribute_keys_(node1, node2, need1, need2, parent, idx1)};
 
@@ -371,23 +305,10 @@ private:
     }
 
     modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
-    printf("\n<redistribute> Result:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(parent, idx1, parent->key_cnt);
-
     if (node1->is_leaf) {
       node3->leaf.sib = node2->leaf.sib;
       node2->leaf.sib = node3;
     }
-
-    // parent must be a index node.
-
-    printf("[2-3 split] Result:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_node(node3);
-    DEBUG_print_parent(parent, idx1, idx2);
   }
 
   void do_3_2_merge_(bstar_node *node1, bstar_node *node2, bstar_node *node3,
@@ -407,6 +328,11 @@ private:
 
     remove_key_in_parent_(node2, node3, parent, idx2);
 
+    // patch
+    if (node1->is_leaf) {
+      parent->key[idx1] = node2->key[0];
+    }
+
     if (node1->is_leaf) {
       // fix next
       node2->leaf.sib = node3->leaf.sib;
@@ -421,54 +347,12 @@ private:
 
   void do_equal_split_2_(bstar_node *node1, bstar_node *node2,
                          bstar_node *parent, std::size_t idx1) {
-    printf("\n[equal-split] Start:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(parent, idx1, parent->key_cnt);
     std::size_t total{node1->key_cnt + node2->key_cnt};
-    std::size_t need1{(total + 1) / 2};
-    std::size_t need2{total / 2};
-
-    printf("\n<redistribute> Start:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(parent, idx1, parent->key_cnt);
+    std::size_t need1{total / 2};
+    std::size_t need2{total - need1};
     KeyType new_key =
         redistribute_keys_(node1, node2, need1, need2, parent, idx1); // BUG
     modify_key_in_parent_(node1, node2, parent, idx1, new_key);
-
-    printf("\n<redistribute> Result:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(parent, idx1, parent->key_cnt);
-
-    printf("[equal-split] Result:\n");
-    DEBUG_print_node(node1);
-    DEBUG_print_node(node2);
-    DEBUG_print_parent(parent, idx1, parent->key_cnt);
-  }
-
-  void do_equal_split_3_(bstar_node *node1, bstar_node *node2,
-                         bstar_node *node3, bstar_node *parent,
-                         std::size_t idx1, std::size_t idx2) {
-    std::size_t total{node1->key_cnt + node2->key_cnt + node3->key_cnt};
-    std::size_t need1{(total + 2) / 3};
-    std::size_t need2{(total + 1) / 3};
-    std::size_t need3{total / 3};
-
-    KeyType new_key1{redistribute_keys_(node1, node2, need1,
-                                        node1->key_cnt + node2->key_cnt - need1,
-                                        parent, idx1)};
-    KeyType new_key2{redistribute_keys_(node2, node3, need2,
-                                        node2->key_cnt + node3->key_cnt - need2,
-                                        parent, idx2)};
-
-    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
-    modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
-    if (node1->is_leaf) {
-      parent->key[idx1] = node2->key[0];
-      parent->key[idx2] = node3->key[0];
-    }
   }
 
   bool pair_left(bstar_node *&node_l, bstar_node *&node_r, std::size_t &idx_l,
@@ -491,23 +375,6 @@ private:
     return false;
   }
 
-  // bool pair_siblings(bstar_node *&node1, bstar_node *&node2, std::size_t
-  // &idx1,
-  //                    std::size_t &idx2, bstar_node *parent) {
-  //   if (idx1 + 1 <= parent->key_cnt) { // ptr index can be key_cnt
-  //     idx2 = idx1 + 1;
-  //     node2 = parent->idx.key_ptr[idx2];
-  //     return true;
-  //   } else if (idx1 > 0) {
-  //     idx2 = idx1 - 1;
-  //     node2 = parent->idx.key_ptr[idx2];
-  //     std::swap(idx1, idx2);
-  //     std::swap(node1, node2);
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   void fix_overflow_(bstar_node *node1, bstar_node *parent, std::size_t idx1) {
     std::size_t idx2{};
     bstar_node *node2{};
@@ -526,7 +393,6 @@ private:
     do_2_3_split_(node1, node2, parent, idx1, idx2);
   }
 
-  // todo
   void fix_underflow_(bstar_node *node1, bstar_node *parent, std::size_t idx1) {
 
     std::size_t idx2{};
@@ -545,12 +411,12 @@ private:
       return;
     }
 
+    // 必须尝试 3 way 均分
     if (!average_overflow_(node1, node2) && !average_underflow_(node1, node2)) {
       do_equal_split_2_(node1, node2, parent, idx1);
       return;
     }
 
-    // find the 3rd sibling
     std::size_t idx3{};
     bstar_node *node3{};
     if (pair_left(node3, node1, idx3, idx1, parent)) {
@@ -561,13 +427,6 @@ private:
     } else {
       pair_right(node2, node3, idx2, idx3, parent);
     }
-
-    if (!average_overflow_3_(node1, node2, node3) &&
-        !average_underflow_3_(node1, node2, node3)) {
-      do_equal_split_3_(node1, node2, node3, parent, idx1, idx2);
-      return;
-    }
-
     do_3_2_merge_(node1, node2, node3, parent, idx1, idx2, idx3);
   }
 
@@ -605,10 +464,6 @@ public:
       }
       cur = cur->idx.key_ptr[next_from];
     }
-    // printf("\n[insert] Start:\n");
-    // DEBUG_print_node(cur);
-    // if (prev)
-    //   DEBUG_print_parent(prev, from, prev->key_cnt);
     std::size_t check{cur->find_data_ptr_index_(k)};
     std::size_t idx{cur->find_idx_ptr_index_(k)};
     if (check != cur->key_cnt && cur->key[check] == k) {
@@ -623,17 +478,12 @@ public:
     cur->leaf.data_ptr[idx] = v;
     cur->key[idx] = k;
     cur->key_cnt++;
-    // printf("[insert] Result:\n");
-    // DEBUG_print_node(cur);
-    // if (prev)
-    //   DEBUG_print_parent(prev, from, prev->key_cnt);
     return true;
   }
 
-  // need test
   bool erase(const KeyType &k) {
-    bstar_node *cur{root}, *prev{}, *next{};
-    std::size_t cur_from{}, next_from{};
+    bstar_node *cur{root}, *next{};
+    std::size_t next_from{};
     while (!cur->is_leaf) {
       next_from = cur->find_idx_ptr_index_(k);
       next = cur->idx.key_ptr[next_from];
@@ -643,8 +493,6 @@ public:
           break;
         next_from = cur->find_idx_ptr_index_(k);
       }
-      prev = cur;
-      cur_from = next_from;
       cur = cur->idx.key_ptr[next_from];
     }
     std::size_t check{cur->find_data_ptr_index_(k)};
@@ -658,7 +506,6 @@ public:
                    (cur->key_cnt - (check + 1)) * sizeof(KeyType));
     }
     cur->key_cnt--;
-
     return true;
   }
 
@@ -680,135 +527,4 @@ public:
     }
     return values;
   }
-
-  [[gnu::noinline]] bstar_node *get_root() { return root; }
-
-  void traverse_full_tree() {
-    printf("\n[TRAVERSE FULL]\n");
-    bstar_node *cur{root};
-    std::vector<ValType> a{};
-    while (!cur->is_leaf) {
-      cur = cur->idx.key_ptr[0];
-    }
-    while (cur) {
-      for (int i = 0; i < cur->key_cnt; i++) {
-        a.emplace_back(cur->key[i]);
-        printf("%d ", cur->key[i]);
-      }
-      cur = cur->leaf.sib;
-    }
-    printf("All keys searched %zu.\n", a.size());
-    puts("");
-  }
 };
-
-void DEBUG_search_full(bstar_tree<int, int, 10> &tree, int ts) {
-  std::vector<int *> ans{};
-  for (int i = 0; i <= ts; i++) {
-    ans = tree.find(i);
-    if (ans.size() != 1 || *ans[0] != i) {
-      printf("\n[ERROR] TREE BROKEN IN TIMESTAMP %d.\n", ts);
-      printf("\n[ERROR] KEY %d NOT FOUND.\n", i);
-    }
-  }
-}
-
-void DEBUG_search_full_range(bstar_tree<int, int, 10> &tree, int from, int to,
-                             int ts) {
-  std::vector<int *> ans{};
-  for (int i = from; i <= to; i++) {
-    ans = tree.find(i);
-    if (ans.size() != 1 || *ans[0] != i) {
-      printf("\n[ERROR] TREE BROKEN IN TIMESTAMP %d.\n", ts);
-      printf("\n[ERROR] KEY %d NOT FOUND.\n", i);
-    }
-  }
-}
-
-int main() {
-  using namespace std;
-  setvbuf(stdout, NULL, _IONBF, 0);
-
-  std::ios::sync_with_stdio(false);
-  std::cin.tie(nullptr);
-
-#define SCALE 1000
-#define T 1
-  random_device rd{};
-  mt19937 gen{3};
-  uniform_int_distribution<> dis{0, SCALE - 1};
-
-  int t = T;
-  int *ptrs[T]{};
-
-  while (t--) {
-    ptrs[t] = (int *)malloc(sizeof(int) * SCALE);
-    bstar_tree<int, int, 10> tree{};
-    auto a = tree.get_root();
-    int search_key = dis(gen);
-
-    vector<int> ans;
-    vector<int *> ret;
-    ans.reserve(1); // 只有一次匹配
-    // 插入并在碰到 search_key 时记录下答案
-    for (int i = 0; i < SCALE; i++) {
-      ptrs[t][i] = i;
-      printf("\nINSERT TIMESTAMP %d\n", i);
-      tree.insert(i, &ptrs[t][i]);
-      if (i == search_key) {
-        ans.emplace_back(ptrs[t][i]);
-      }
-      DEBUG_search_full(tree, i);
-    }
-
-    tree.traverse_full_tree();
-
-    // 查找
-    printf("Try search: %d.\n", search_key);
-    ret = tree.find(search_key);
-
-    // 先校验数量
-    if (ret.size() != ans.size()) {
-      fprintf(stderr, "SIZE MISMATCH: expected %zu, got %zu\n", ans.size(),
-              ret.size());
-      exit(-1);
-    }
-
-    // 按实际元素个数比较
-    size_t n = min(ret.size(), ans.size());
-    for (size_t i = 0; i < n; i++) {
-      if (*ret[i] != ans[i]) {
-        fprintf(stderr, "COMPARE FAILED at index %zu: expected %d, got %d\n", i,
-                ans[i], *ret[i]);
-        exit(-1);
-      }
-    }
-
-    // tree.erase(search_key);
-    // if (tree.find(search_key).empty()) {
-    //   printf("SUCCESS ERASE AND FIND!\n");
-    // } else {
-    //   printf("FAILED ERASE.\n");
-    //   tree.traverse_full_tree();
-    //   exit(-1);
-    // }
-
-    for (std::size_t i = 0; i < SCALE; i++) {
-      printf("\nERASE TIMESTAMP %d\n", i);
-      tree.erase(i);
-      if (!tree.find(i).empty()) {
-        printf("FAILED ERASE.\n");
-        exit(-1);
-      }
-      DEBUG_search_full_range(tree, i + 1, SCALE - 1, i);
-    }
-
-    printf("ROUND %d FINISHED.\n", T - t);
-
-    free(ptrs[t]);
-  }
-
-  printf("SUCCESSFULLY PASSED ALL ROUNDS!\n");
-
-  return 0;
-}

@@ -322,7 +322,8 @@ private:
                      std::size_t idx2, std::size_t idx3) {
   }
 
-  void do_equal_split_(bstar_node *node1, bstar_node *node2, bstar_node *parent, std::size_t idx1) {
+  void do_equal_split_2_(bstar_node *node1, bstar_node *node2,
+                         bstar_node *parent, std::size_t idx1) {
     printf("\n[equal-split] Start:\n");
     DEBUG_print_node(node1);
     DEBUG_print_node(node2);
@@ -368,7 +369,7 @@ private:
     }
     if (!average_will_overflow_(node1, node2) &&
         !will_underflow_(node1, node2)) {
-      do_equal_split_(node1, node2, parent, idx1);
+      do_equal_split_2_(node1, node2, parent, idx1);
       return;
     }
     do_2_3_split_(node1, node2, parent, idx1, idx2);
