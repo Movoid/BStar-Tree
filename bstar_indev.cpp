@@ -13,7 +13,7 @@
 
 // `M` >= 4
 template <typename KeyType, typename ValType, std::size_t M,
-          typename _Requires = std::void_t<std::enable_if_t<M >= 4>,
+          typename _Requires = std::void_t<std::enable_if_t<M >= 6>,
                                            decltype(std::declval<KeyType>() <
                                                     std::declval<KeyType>())>>
 class bstar_tree {
@@ -66,8 +66,8 @@ public:
 
   bstar_node *root{};
   static constexpr std::size_t KEY_SLOTS = M - 1;
-  static constexpr std::size_t MAX_KEYS = KEY_SLOTS - 1;
-  static constexpr std::size_t MIN_KEYS = (2 * (MAX_KEYS) + 2) / 3 - 1; // ceil
+  static constexpr std::size_t MAX_KEYS = KEY_SLOTS;
+  static constexpr std::size_t MIN_KEYS = (2 * MAX_KEYS - 5) / 3;
 
 private:
   // ceil((a + b) / 2)
@@ -76,28 +76,28 @@ private:
   //   return (a >> 1) + (b >> 1) + ((a & 1) + (b & 1) + 1) / 2;
   // }
 
-  inline bool overflow_(const bstar_node *n) noexcept {
-    return n->key_cnt > MAX_KEYS;
+  inline bool insert_overflow_(const bstar_node *n) noexcept {
+    return n->key_cnt >= MAX_KEYS;
   }
   inline bool average_overflow_(const bstar_node *a,
                                 const bstar_node *b) noexcept {
-    return ((a->key_cnt + b->key_cnt + 1) / 2) > MAX_KEYS;
+    return ((a->key_cnt + b->key_cnt) / 2 >= MAX_KEYS);
   }
   inline bool average_overflow_3_(const bstar_node *a, const bstar_node *b,
                                   const bstar_node *c) noexcept {
-    return ((a->key_cnt + b->key_cnt + c->key_cnt + 2) / 3) > MAX_KEYS;
+    return ((a->key_cnt + b->key_cnt + c->key_cnt) / 3) >= MAX_KEYS;
   }
 
-  inline bool underflow_(const bstar_node *n) noexcept {
-    return n == root ? false : (n->key_cnt < MIN_KEYS);
+  inline bool erase_underflow_(const bstar_node *n) noexcept {
+    return n == root ? false : (n->key_cnt <= MIN_KEYS);
   }
   inline bool average_underflow_(const bstar_node *a,
                                  const bstar_node *b) noexcept {
-    return ((a->key_cnt + b->key_cnt + 1) / 2) < MIN_KEYS;
+    return ((a->key_cnt + b->key_cnt) / 2) <= MIN_KEYS;
   }
   inline bool average_underflow_3_(const bstar_node *a, const bstar_node *b,
                                    const bstar_node *c) noexcept {
-    return ((a->key_cnt + b->key_cnt + c->key_cnt + 2) / 3) < MIN_KEYS;
+    return ((a->key_cnt + b->key_cnt + c->key_cnt) / 3) <= MIN_KEYS;
   }
 
   void DEBUG_print_node(bstar_node *node) {
@@ -433,8 +433,8 @@ private:
     DEBUG_print_node(node1);
     DEBUG_print_node(node2);
     DEBUG_print_parent(parent, idx1, parent->key_cnt);
-    KeyType new_key =
-        redistribute_keys_(node1, node2, need1, need2, parent, idx1); // BUG
+    KeyType new_key{
+        redistribute_keys_(node1, node2, need1, need2, parent, idx1)};
     modify_key_in_parent_(node1, node2, parent, idx1, new_key);
 
     printf("\n<redistribute> Result:\n");
@@ -539,14 +539,9 @@ private:
     }
 
     if (parent == root && parent->key_cnt == 1) {
-      if (node1->key_cnt + node2->key_cnt < MAX_KEYS) {
+      if (node1->key_cnt + node2->key_cnt <= MAX_KEYS) {
         do_2_1_merge_root_();
       }
-      return;
-    }
-
-    if (!average_overflow_(node1, node2) && !average_underflow_(node1, node2)) {
-      do_equal_split_2_(node1, node2, parent, idx1);
       return;
     }
 
@@ -591,7 +586,7 @@ public:
   }
 
   bool insert(const KeyType &k, ValType *v) {
-    if (overflow_(root)) {
+    if (insert_overflow_(root)) {
       do_1_2_split_root_();
     }
     bstar_node *cur{root}, *next{};
@@ -599,7 +594,7 @@ public:
     while (!cur->is_leaf) {
       next_from = cur->find_idx_ptr_index_(k);
       next = cur->idx.key_ptr[next_from];
-      if (overflow_(next)) {
+      if (insert_overflow_(next)) {
         fix_overflow_(next, cur, next_from);
         next_from = cur->find_idx_ptr_index_(k);
       }
@@ -637,7 +632,7 @@ public:
     while (!cur->is_leaf) {
       next_from = cur->find_idx_ptr_index_(k);
       next = cur->idx.key_ptr[next_from];
-      if (underflow_(next)) {
+      if (erase_underflow_(next)) {
         fix_underflow_(next, cur, next_from);
         if (cur->is_leaf)
           break;
@@ -702,7 +697,7 @@ public:
   }
 };
 
-void DEBUG_search_full(bstar_tree<int, int, 10> &tree, int ts) {
+void DEBUG_search_full(bstar_tree<int, int, 6> &tree, int ts) {
   std::vector<int *> ans{};
   for (int i = 0; i <= ts; i++) {
     ans = tree.find(i);
@@ -713,7 +708,7 @@ void DEBUG_search_full(bstar_tree<int, int, 10> &tree, int ts) {
   }
 }
 
-void DEBUG_search_full_range(bstar_tree<int, int, 10> &tree, int from, int to,
+void DEBUG_search_full_range(bstar_tree<int, int, 6> &tree, int from, int to,
                              int ts) {
   std::vector<int *> ans{};
   for (int i = from; i <= to; i++) {
@@ -732,7 +727,7 @@ int main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-#define SCALE 1000
+#define SCALE 20000
 #define T 1
   random_device rd{};
   mt19937 gen{3};
@@ -743,7 +738,7 @@ int main() {
 
   while (t--) {
     ptrs[t] = (int *)malloc(sizeof(int) * SCALE);
-    bstar_tree<int, int, 10> tree{};
+    bstar_tree<int, int, 6> tree{};
     auto a = tree.get_root();
     int search_key = dis(gen);
 
