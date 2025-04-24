@@ -67,21 +67,21 @@ public:
   bstar_node *root{};
   static constexpr std::size_t KEY_SLOTS = M - 1;
   static constexpr std::size_t MAX_KEYS = KEY_SLOTS - 1;
-  static constexpr std::size_t MIN_KEYS = (2 * (MAX_KEYS) + 2) / 3; // ceil
+  static constexpr std::size_t MIN_KEYS = (2 * (MAX_KEYS) + 2) / 3 - 1; // ceil
 
 private:
   // ceil((a + b) / 2)
-  static constexpr std::size_t ceil_half(std::size_t a,
-                                         std::size_t b) noexcept {
-    return (a >> 1) + (b >> 1) + ((a & 1) + (b & 1) + 1) / 2;
-  }
+  // static constexpr std::size_t ceil_half(std::size_t a,
+  //                                        std::size_t b) noexcept {
+  //   return (a >> 1) + (b >> 1) + ((a & 1) + (b & 1) + 1) / 2;
+  // }
 
   inline bool overflow_(const bstar_node *n) noexcept {
     return n->key_cnt > MAX_KEYS;
   }
   inline bool average_overflow_(const bstar_node *a,
                                 const bstar_node *b) noexcept {
-    return ceil_half(a->key_cnt, b->key_cnt) > MAX_KEYS;
+    return std::ceil((a->key_cnt + b->key_cnt + 1) / 2) > MAX_KEYS;
   }
 
   inline bool underflow_(const bstar_node *n) noexcept {
@@ -89,7 +89,7 @@ private:
   }
   inline bool average_underflow_(const bstar_node *a,
                                  const bstar_node *b) noexcept {
-    return ceil_half(a->key_cnt, b->key_cnt) < MIN_KEYS;
+    return std::floor((a->key_cnt + b->key_cnt) / 2) < MIN_KEYS;
   }
 
   void DEBUG_print_node(bstar_node *node) {
@@ -299,7 +299,7 @@ private:
       root->key[node1->key_cnt] = root->key[0];
       std::memmove(root->key, node1->key, node1->key_cnt * sizeof(KeyType));
       std::memmove(root->key + node1->key_cnt + 1, node2->key,
-                   node2->key_cnt * sizeof(KeyType));
+                   node2->key_cnt * sizeof(KeyType)); // ?
       // ptr
       std::memmove(root->idx.key_ptr, node1->idx.key_ptr,
                    (node1->key_cnt + 1) * sizeof(bstar_node *));
@@ -344,12 +344,6 @@ private:
     KeyType new_key2{redistribute_keys_(node2, node3, node2->key_cnt - need3,
                                         need3, parent, idx2)};
 
-    if (node1->is_leaf) {
-      insert_key_in_parent(node2, node3, parent, idx2, new_key2);
-    } else {
-      modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
-    }
-
     //
     printf("\n<redistribute> Phase1:\n");
     DEBUG_print_node(node2);
@@ -357,6 +351,13 @@ private:
     DEBUG_print_parent(parent, idx2, parent->key_cnt);
     KeyType new_key1{
         redistribute_keys_(node1, node2, need1, need2, parent, idx1)};
+
+    if (node1->is_leaf) {
+      insert_key_in_parent(node2, node3, parent, idx2, new_key2);
+    } else {
+      modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
+    }
+
     modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
     printf("\n<redistribute> Result:\n");
     DEBUG_print_node(node1);
@@ -387,9 +388,17 @@ private:
     KeyType new_key1{redistribute_keys_(node1, node2, need1,
                                         node1->key_cnt + node2->key_cnt - need1,
                                         parent, idx1)};
-    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
 
     KeyType new_key2{redistribute_keys_(node2, node3, need2, 0, parent, idx2)};
+
+    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
+
+    remove_key_in_parent_(node2, node3, parent, idx2);
+
+    // patch
+    if (node1->is_leaf) {
+      parent->key[idx1] = node2->key[0];
+    }
 
     if (node1->is_leaf) {
       // fix next
@@ -399,8 +408,6 @@ private:
       node2->idx.key_ptr[node2->key_cnt + 1] = node3->idx.key_ptr[0];
       node2->key_cnt++;
     }
-
-    remove_key_in_parent_(node2, node3, parent, idx2);
 
     delete node3;
   }
@@ -491,10 +498,7 @@ private:
 
   // todo
   void fix_underflow_(bstar_node *node1, bstar_node *parent, std::size_t idx1) {
-    if (parent == root && parent->key_cnt == 1) {
-      do_2_1_merge_root_();
-      return;
-    }
+
     std::size_t idx2{};
     bstar_node *node2{};
     if (pair_left(node2, node1, idx2, idx1, parent)) {
@@ -507,6 +511,14 @@ private:
       do_equal_split_(node1, node2, parent, idx1);
       return;
     }
+
+    if (parent == root && parent->key_cnt == 1) {
+      if (node1->key_cnt + node2->key_cnt < MAX_KEYS) {
+        do_2_1_merge_root_();
+      }
+      return;
+    }
+
     // find the 3rd sibling
     std::size_t idx3{};
     bstar_node *node3{};
@@ -589,20 +601,21 @@ public:
       next = cur->idx.key_ptr[next_from];
       if (underflow_(next)) {
         fix_underflow_(next, cur, next_from);
+        if (cur->is_leaf)
+          break;
         next_from = cur->find_idx_ptr_index_(k);
       }
       cur = cur->idx.key_ptr[next_from];
     }
     std::size_t check{cur->find_data_ptr_index_(k)};
-    std::size_t idx{cur->find_idx_ptr_index_(k)};
     if (check == cur->key_cnt || cur->key[check] != k) {
       return false;
     }
     if (check != cur->key_cnt) {
       std::memmove(cur->leaf.data_ptr + check, cur->leaf.data_ptr + check + 1,
-                   (cur->key_cnt - (idx + 1)) * sizeof(ValType *));
+                   (cur->key_cnt - (check + 1)) * sizeof(ValType *));
       std::memmove(cur->key + check, cur->key + check + 1,
-                   (cur->key_cnt - (idx + 1)) * sizeof(KeyType));
+                   (cur->key_cnt - (check + 1)) * sizeof(KeyType));
     }
     cur->key_cnt--;
     return true;
@@ -652,7 +665,19 @@ void DEBUG_search_full(bstar_tree<int, int, 10> &tree, int ts) {
   std::vector<int *> ans{};
   for (int i = 0; i <= ts; i++) {
     ans = tree.find(i);
-    if (ans.size() != 1) {
+    if (ans.size() != 1 || *ans[0] != i) {
+      printf("\n[ERROR] TREE BROKEN IN TIMESTAMP %d.\n", ts);
+      printf("\n[ERROR] KEY %d NOT FOUND.\n", i);
+    }
+  }
+}
+
+void DEBUG_search_full_range(bstar_tree<int, int, 10> &tree, int from, int to,
+                             int ts) {
+  std::vector<int *> ans{};
+  for (int i = from; i <= to; i++) {
+    ans = tree.find(i);
+    if (ans.size() != 1 || *ans[0] != i) {
       printf("\n[ERROR] TREE BROKEN IN TIMESTAMP %d.\n", ts);
       printf("\n[ERROR] KEY %d NOT FOUND.\n", i);
     }
@@ -661,11 +686,12 @@ void DEBUG_search_full(bstar_tree<int, int, 10> &tree, int ts) {
 
 int main() {
   using namespace std;
+  // setvbuf(stdout, NULL, _IONBF, 0);
 
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-#define SCALE 1000
+#define SCALE 10000
 #define T 1
   random_device rd{};
   mt19937 gen{3};
@@ -673,8 +699,6 @@ int main() {
 
   int t = T;
   int *ptrs[T]{};
-
-  bool pass{true};
 
   while (t--) {
     ptrs[t] = (int *)malloc(sizeof(int) * SCALE);
@@ -687,8 +711,8 @@ int main() {
     ans.reserve(1); // 只有一次匹配
     // 插入并在碰到 search_key 时记录下答案
     for (int i = 0; i < SCALE; i++) {
-      ptrs[t][i] = dis(gen);
-      printf("\nTIMESTAMP %d\n", i);
+      ptrs[t][i] = i;
+      printf("\nINSERT TIMESTAMP %d\n", i);
       tree.insert(i, &ptrs[t][i]);
       if (i == search_key) {
         ans.emplace_back(ptrs[t][i]);
@@ -706,7 +730,7 @@ int main() {
     if (ret.size() != ans.size()) {
       fprintf(stderr, "SIZE MISMATCH: expected %zu, got %zu\n", ans.size(),
               ret.size());
-      pass = false;
+      exit(-1);
     }
 
     // 按实际元素个数比较
@@ -715,8 +739,27 @@ int main() {
       if (*ret[i] != ans[i]) {
         fprintf(stderr, "COMPARE FAILED at index %zu: expected %d, got %d\n", i,
                 ans[i], *ret[i]);
-        pass = false;
+        exit(-1);
       }
+    }
+
+    // tree.erase(search_key);
+    // if (tree.find(search_key).empty()) {
+    //   printf("SUCCESS ERASE AND FIND!\n");
+    // } else {
+    //   printf("FAILED ERASE.\n");
+    //   tree.traverse_full_tree();
+    //   exit(-1);
+    // }
+
+    for (std::size_t i = 0; i < SCALE; i++) {
+      printf("\nERASE TIMESTAMP %d\n", i);
+      tree.erase(i);
+      if (!tree.find(i).empty()) {
+        printf("FAILED ERASE.\n");
+        exit(-1);
+      }
+      DEBUG_search_full_range(tree, i + 1, SCALE - 1, i);
     }
 
     printf("ROUND %d FINISHED.\n", T - t);
@@ -724,11 +767,7 @@ int main() {
     free(ptrs[t]);
   }
 
-  if (pass) {
-    printf("SUCCESSFULLY PASSED ALL ROUNDS!\n");
-  } else {
-    printf("FAILED.\n");
-  }
+  printf("SUCCESSFULLY PASSED ALL ROUNDS!\n");
 
   return 0;
 }
