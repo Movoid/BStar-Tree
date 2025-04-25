@@ -12,11 +12,11 @@
 \*================================================*/
 
 template <typename KeyType, typename ValType, std::size_t M,
-          typename _Requires = std::void_t<std::enable_if_t<M >= 6>,
+          typename _Requires = std::void_t<std::enable_if_t<M >= 5>,
                                            decltype(std::declval<KeyType>() <
                                                     std::declval<KeyType>())>>
 class b_star_tree {
-public:
+private:
   struct b_star_node {
     KeyType key[M - 1]{};
     union {
@@ -32,7 +32,7 @@ public:
     std::size_t key_cnt{};
     bool is_leaf{};
 
-    std::size_t find_idx_ptr_index_(const KeyType &k) {
+    std::size_t find_idx_ptr_index_(const KeyType &k) noexcept {
       std::size_t l{0}, r{key_cnt};
       std::size_t mid{};
       // key[-1, l) <= val, key[r, key_cnt + 1) > val.
@@ -47,7 +47,7 @@ public:
       return r;
     }
 
-    std::size_t find_data_ptr_index_(const KeyType &k) {
+    std::size_t find_data_ptr_index_(const KeyType &k) noexcept {
       std::size_t l{0}, r{key_cnt};
       std::size_t mid{};
       // key[-1, l) < val, key[r, key_cnt + 1) >= val.
@@ -100,7 +100,7 @@ private:
   // parent != nullptr
   KeyType redistribute_keys_(b_star_node *node1, b_star_node *node2,
                              std::size_t need1, std::size_t need2,
-                             b_star_node *parent, std::size_t idx1) {
+                             b_star_node *parent, std::size_t idx1) noexcept {
 
     std::size_t total{node1->key_cnt + node2->key_cnt};
     if (node1->key_cnt > need1) {
@@ -192,7 +192,7 @@ private:
 
   void insert_key_in_parent(b_star_node *node1, b_star_node *node2,
                             b_star_node *parent, std::size_t idx1,
-                            const KeyType &new_key) {
+                            const KeyType &new_key) noexcept {
     std::memmove(parent->key + idx1 + 1, parent->key + idx1,
                  (parent->key_cnt - idx1) * sizeof(KeyType));
     std::memmove(parent->idx.key_ptr + idx1 + 2, parent->idx.key_ptr + idx1 + 1,
@@ -205,7 +205,7 @@ private:
 
   void modify_key_in_parent_(b_star_node *node1, b_star_node *node2,
                              b_star_node *parent, std::size_t idx1,
-                             const KeyType &new_key) {
+                             const KeyType &new_key) noexcept {
     if (node1->is_leaf) {
       parent->key[idx1] = node2->key[0];
     } else {
@@ -216,7 +216,7 @@ private:
   }
 
   void remove_key_in_parent_(b_star_node *node1, b_star_node *node2,
-                             b_star_node *parent, std::size_t idx1) {
+                             b_star_node *parent, std::size_t idx1) noexcept {
     std::memmove(parent->key + idx1, parent->key + idx1 + 1,
                  (parent->key_cnt - idx1) * sizeof(KeyType));
     std::memmove(parent->idx.key_ptr + idx1 + 1, parent->idx.key_ptr + idx1 + 2,
@@ -224,7 +224,7 @@ private:
     parent->key_cnt--;
   }
 
-  void do_1_2_split_root_() {
+  void do_1_2_split_root_() noexcept {
     b_star_node *new_root{new b_star_node{.key_cnt = 0, .is_leaf = false}};
     b_star_node *node2{new b_star_node{.key_cnt = 0, .is_leaf = root->is_leaf}};
     if (root->is_leaf) {
@@ -252,7 +252,7 @@ private:
     root = new_root;
   }
 
-  void do_2_1_merge_root_() {
+  void do_2_1_merge_root_() noexcept {
     b_star_node *node1{root->idx.key_ptr[0]};
     b_star_node *node2{root->idx.key_ptr[1]};
     if (node1->is_leaf) {
@@ -288,7 +288,8 @@ private:
   }
 
   void do_2_3_split_(b_star_node *node1, b_star_node *node2,
-                     b_star_node *parent, std::size_t idx1, std::size_t idx2) {
+                     b_star_node *parent, std::size_t idx1,
+                     std::size_t idx2) noexcept {
     // first fill node3
     b_star_node *node3{
         new b_star_node{.key_cnt = 0, .is_leaf = node1->is_leaf}};
@@ -329,7 +330,7 @@ private:
 
   void do_3_2_merge_(b_star_node *node1, b_star_node *node2, b_star_node *node3,
                      b_star_node *parent, std::size_t idx1, std::size_t idx2,
-                     std::size_t idx3) {
+                     std::size_t idx3) noexcept {
     std::size_t total{node1->key_cnt + node2->key_cnt + node3->key_cnt};
     std::size_t need1{(total + 1) / 2};
     std::size_t need2{total / 2};
@@ -357,7 +358,7 @@ private:
   }
 
   void do_2_equal_split_(b_star_node *node1, b_star_node *node2,
-                         b_star_node *parent, std::size_t idx1) {
+                         b_star_node *parent, std::size_t idx1) noexcept {
     std::size_t total{node1->key_cnt + node2->key_cnt};
     std::size_t need1{(total + 1) / 2};
     std::size_t need2{total / 2};
@@ -369,7 +370,7 @@ private:
 
   void do_3_equal_split_(b_star_node *node1, b_star_node *node2,
                          b_star_node *node3, b_star_node *parent,
-                         std::size_t idx1, std::size_t idx2) {
+                         std::size_t idx1, std::size_t idx2) noexcept {
     std::size_t total{node1->key_cnt + node2->key_cnt + node3->key_cnt};
     std::size_t need1{(total + 2) / 3};
     std::size_t need2{(total + 1) / 3};
@@ -391,7 +392,7 @@ private:
   }
 
   bool pair_left(b_star_node *&node_l, b_star_node *&node_r, std::size_t &idx_l,
-                 std::size_t &idx_r, b_star_node *parent) {
+                 std::size_t &idx_r, b_star_node *parent) noexcept {
     if (idx_r > 0) {
       idx_l = idx_r - 1;
       node_l = parent->idx.key_ptr[idx_l];
@@ -401,7 +402,8 @@ private:
   }
 
   bool pair_right(b_star_node *&node_l, b_star_node *&node_r,
-                  std::size_t &idx_l, std::size_t &idx_r, b_star_node *parent) {
+                  std::size_t &idx_l, std::size_t &idx_r,
+                  b_star_node *parent) noexcept {
     if (idx_l + 1 <= parent->key_cnt) {
       idx_r = idx_l + 1;
       node_r = parent->idx.key_ptr[idx_r];
@@ -411,7 +413,7 @@ private:
   }
 
   void fix_overflow_(b_star_node *node1, b_star_node *parent,
-                     std::size_t idx1) {
+                     std::size_t idx1) noexcept {
     std::size_t idx2{};
     b_star_node *node2{};
 
@@ -431,7 +433,7 @@ private:
   }
 
   void fix_underflow_(b_star_node *node1, b_star_node *parent,
-                      std::size_t idx1) {
+                      std::size_t idx1) noexcept {
 
     std::size_t idx2{};
     b_star_node *node2{};
@@ -475,26 +477,54 @@ private:
     do_3_2_merge_(node1, node2, node3, parent, idx1, idx2, idx3);
   }
 
-public:
-  b_star_tree() { root = new b_star_node{.key_cnt = 0, .is_leaf = true}; }
-  ~b_star_tree() {
-    std::vector<b_star_node *> decon{};
-    decon.emplace_back(root);
-    while (!decon.empty()) {
-      b_star_node *cur{decon.back()};
-      decon.pop_back();
-      if (!cur->is_leaf) {
-        for (std::size_t i = 0; i <= cur->key_cnt; i++) {
-          if (cur->idx.key_ptr[i]) {
+  void delete_all_nodes_(bool del_root) {
+    if (root) {
+      std::vector<b_star_node *> decon{};
+      if (!root->is_leaf) {
+        for (std::size_t i = 0; i <= root->key_cnt; i++) {
+          decon.emplace_back(root->idx.key_ptr[i]);
+        }
+      }
+      while (!decon.empty()) {
+        b_star_node *cur{decon.back()};
+        decon.pop_back();
+        if (!cur->is_leaf) {
+          for (std::size_t i = 0; i <= cur->key_cnt; i++) {
             decon.emplace_back(cur->idx.key_ptr[i]);
           }
         }
+        delete cur;
       }
-      delete cur;
+      if (del_root) {
+        delete root; // and root
+      }
     }
   }
 
-  bool insert(const KeyType &k, ValType *v) {
+public:
+  b_star_tree() noexcept {
+    root = new b_star_node{.key_cnt = 0, .is_leaf = true};
+  }
+  ~b_star_tree() { delete_all_nodes_(true); }
+
+  b_star_tree(const b_star_tree &obj) = delete;
+  b_star_tree(b_star_tree &&obj) noexcept {
+    delete_all_nodes_(true);
+    root = obj.root;
+    obj.root = nullptr;
+  }
+
+  b_star_tree &operator=(const b_star_tree &obj) = delete;
+  b_star_tree &operator=(b_star_tree &&obj) noexcept {
+    delete_all_nodes_(true);
+    root = obj.root;
+    obj.root = nullptr;
+    return *this;
+  }
+
+  void clear() { delete_all_nodes_(false); }
+
+  bool insert(const KeyType &k, ValType *v) noexcept {
     if (insert_overflow_(root)) {
       do_1_2_split_root_();
     }
@@ -527,7 +557,7 @@ public:
   }
 
   // need test
-  bool erase(const KeyType &k) {
+  bool erase(const KeyType &k) noexcept {
     b_star_node *cur{root}, *next{};
     std::size_t next_from{};
     while (!cur->is_leaf) {
