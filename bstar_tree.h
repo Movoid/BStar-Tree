@@ -604,4 +604,25 @@ public:
     }
     return values;
   }
+
+  // [low, high)
+  std::vector<ValType *> find_range(const KeyType &low,
+                                    const KeyType &high) const {
+    b_star_node *cur{root};
+    while (cur && !cur->is_leaf) {
+      cur = cur->idx.key_ptr[cur->find_data_ptr_index_(low)];
+    }
+    std::vector<ValType *> values{};
+    while (cur) {
+      std::size_t beg{cur->find_data_ptr_index_(low)},
+          end{cur->find_data_ptr_index_(high)};
+      if (end == 0)
+        break;
+      for (std::size_t i = beg; i < end; i++) {
+        values.emplace_back(cur->leaf.data_ptr[i]);
+      }
+      cur = cur->leaf.sib;
+    }
+    return values;
+  }
 };

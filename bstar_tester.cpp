@@ -5,7 +5,7 @@
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{100000000};
+constexpr std::size_t SCALE{20000};
 constexpr std::size_t FLOOR{145};
 
 void dup_test() {
@@ -164,10 +164,57 @@ void stdmap_benchmark() {
   std::cout << "Find time:  " << find_time << " s\n";
 }
 
+void nodup_rangequery_test() {
+
+  b_star_tree<ll, ll, FLOOR> btree{};
+
+  vector<ll *> ans{};
+
+  for (int i = 0; i < SCALE; i++) {
+    printf("\nINSERT TIMESTAMP %zu\n", i);
+    btree.insert(i, (ll *)123);
+    // search
+    ans = btree.find_range(std::max(0, i - 100), i + 1);
+    if (ans.size() != (i + 1 - std::max(0, i - 100))) {
+      fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
+      exit(-1); // NOLINT
+    }
+    if (!ans.empty()) {
+      for (std::size_t i = 0; i < ans.size(); i++) {
+        if ((ll)ans[i] != 123) {
+          fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
+          exit(-1); // NOLINT
+        }
+      }
+    }
+  }
+
+  for (int i = 0; i < SCALE; i++) {
+    printf("\nERASE TIMESTAMP %zu\n", i);
+    btree.erase(i);
+    ans = btree.find_range(i + 1, SCALE);
+    if (ans.size() != (SCALE - i - 1)) {
+      fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
+      exit(-1); // NOLINT
+    }
+    if (!ans.empty()) {
+      for (std::size_t i = 0; i < ans.size(); i++) {
+        if ((ll)ans[i] != 123) {
+          fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
+          exit(-1); // NOLINT
+        }
+      }
+    }
+  }
+
+  puts("NODUP_RANGEQUERY_TEST FINISHED.\n");
+}
+
 int main() {
+  // bstar_benchmark();
+  // stdmap_benchmark();
+  nodup_rangequery_test();
   // dup_test();
   // nodup_test();
-  bstar_benchmark();
-  stdmap_benchmark();
   return 0;
 }
