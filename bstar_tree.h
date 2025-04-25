@@ -27,7 +27,6 @@ private:
       struct {
         b_star_node *key_ptr[M]{};
       } idx;
-      b_star_node *ptrs[M]{};
     };
     std::size_t key_cnt{};
     bool is_leaf{};
@@ -541,9 +540,6 @@ public:
     }
     std::size_t check{cur->find_data_ptr_index_(k)};
     std::size_t idx{cur->find_idx_ptr_index_(k)};
-    // if (check != cur->key_cnt && cur->key[check] == k) {
-    //   return false;
-    // }
     if (idx != cur->key_cnt) {
       std::memmove(cur->leaf.data_ptr + idx + 1, cur->leaf.data_ptr + idx,
                    (cur->key_cnt - idx) * sizeof(ValType *));
