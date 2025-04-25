@@ -15,19 +15,21 @@ Not cache optimized.
 ```text
 Benchmark:
 
-SCALE = 100000000
+# g++ -O2 ./bstar_tester.cpp -o ./_output.run      
+
+SCALE = 20000000
 FLOOR = 145
 
 B-star insert
 B-star erase
 B-star find
-Insert time: 12.0652 s
-Erase time:  44.024 s
-Find time:  9.14769 s
+Insert time: 0.509264 s
+Erase time:  0.850953 s
+Find time:  0.0176606 s
 std::map insert
 std::map erase
 std::map find
-Insert time: 128.22 s
-Erase time:  114.343 s
-Find time:  6.20423 s
+Insert time: 4.88365 s
+Erase time:  1.42912 s
+Find time:  0.00418141 s
 ```

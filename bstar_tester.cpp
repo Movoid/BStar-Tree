@@ -5,7 +5,7 @@
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{20000};
+constexpr std::size_t SCALE{20000000};
 constexpr std::size_t FLOOR{145};
 
 void dup_test() {
@@ -143,9 +143,11 @@ void stdmap_benchmark() {
   clock_gettime(CLOCK_MONOTONIC, &end2);
 
   std::cout << "std::map find" << std::endl;
+  volatile ll sum{};
   clock_gettime(CLOCK_MONOTONIC, &beg3);
   for (std::size_t i = 0; i < SCALE; i++) {
     auto ans = t.find(i);
+    sum += (ll)ans->second;
   }
   clock_gettime(CLOCK_MONOTONIC, &end3);
 
@@ -211,9 +213,9 @@ void nodup_rangequery_test() {
 }
 
 int main() {
-  // bstar_benchmark();
-  // stdmap_benchmark();
-  nodup_rangequery_test();
+  bstar_benchmark();
+  stdmap_benchmark();
+  // nodup_rangequery_test();
   // dup_test();
   // nodup_test();
   return 0;
