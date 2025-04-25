@@ -7,7 +7,7 @@ C-style, not STL.
 - [x] `erase` with preemptive merge
 - [x] Duplicate keys support
 - [x] `find`
-- [ ] Range query
+- [x] Range query
 - [ ] Cpp-style
 
 Not cache optimized.
