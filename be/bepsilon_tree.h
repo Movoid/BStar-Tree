@@ -52,7 +52,7 @@ struct b_base_node {
   using key_type = KeyType;
   using val_type = ValType;
 
-  KeyType key[M - 1]{};
+  KeyType key[M - 1];
   union {
     struct {
       ValType *data_ptr[M - 1];
@@ -62,8 +62,8 @@ struct b_base_node {
       NodeType *key_ptr[M];
     } idx;
   };
-  std::size_t key_cnt{};
-  bool is_leaf{};
+  std::size_t key_cnt;
+  bool is_leaf;
 
   std::size_t find_idx_ptr_index_(const KeyType &k) noexcept {
     std::size_t l{0}, r{key_cnt};
@@ -688,14 +688,15 @@ struct b_epsilon_node
     lazy_type type{};
     KeyType target_key{};
     ValType target_val{};
-  } *lazy_buf{};
+  } *lazy_buf;
+  std::size_t lazy_cnt;
   void construct_lazy_buf() { lazy_buf = new lazy_entry[BufSize]{}; }
   void destruct_lazy_buf() { delete[] lazy_buf; }
 };
 
-template <
-    typename KeyType, typename ValType, std::size_t M, std::size_t BufSize,
-    typename Requires = std::void_t<std::enable_if_t<M >= 5 && BufSize >= 1>>>
+template <typename KeyType, typename ValType, std::size_t M,
+          std::size_t BufSize = static_cast<std::size_t>(std::sqrt(M)),
+          typename Requires = std::void_t<std::enable_if_t<BufSize >= 1>>>
 class b_epsilon_tree
     : public b_star_tree<KeyType, ValType, M,
                          b_epsilon_node<KeyType, ValType, M, BufSize>> {
