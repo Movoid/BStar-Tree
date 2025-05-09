@@ -1,3 +1,4 @@
+#pragma once
 #include <bits/stdc++.h>
 
 /*================================================*\
@@ -28,25 +29,15 @@ struct is_a_node : std::false_type {};
 template <typename NodeType>
 struct is_a_node<
     NodeType,
-    std::void_t<decltype(std::declval<NodeType>().key),
-                decltype(std::declval<NodeType>().leaf.data_ptr),
-                decltype(std::declval<NodeType>().leaf.sib),
-                decltype(std::declval<NodeType>().idx.key_ptr),
-                decltype(std::declval<NodeType>().key_cnt),
-                decltype(std::declval<NodeType>().is_leaf),
-                decltype(std::declval<NodeType>().find_idx_ptr_index_(
-                    std::declval<typename NodeType::key_type>())),
-                decltype(std::declval<NodeType>().find_data_ptr_index_(
-                    std::declval<typename NodeType::key_type>())),
-                decltype(std::declval<typename NodeType::key_type>() <
+    std::void_t<decltype(std::declval<typename NodeType::key_type>() <
                          std::declval<typename NodeType::key_type>()),
                 decltype(typename NodeType::key_type{}),
                 decltype(typename NodeType::key_type{
                     std::declval<const typename NodeType::key_type &>()})>>
     : std::true_type {};
 
-template <typename KeyType, typename ValType, std::size_t M, typename NodeType,
-          typename Requires = typename is_a_node<NodeType>::type>
+template <typename KeyType, typename ValType, std::size_t M, typename Derived,
+          typename Requires = std::enable_if_t<is_a_node<Derived>::value>>
 struct b_base_node {
 
   using key_type = KeyType;
@@ -56,10 +47,10 @@ struct b_base_node {
   union {
     struct {
       ValType *data_ptr[M - 1];
-      NodeType *sib;
+      Derived *sib;
     } leaf;
     struct {
-      NodeType *key_ptr[M];
+      Derived *key_ptr[M];
     } idx;
   };
   std::size_t key_cnt;
@@ -71,7 +62,7 @@ struct b_base_node {
     // key[-1, l) <= val, key[r, key_cnt + 1) > val.
     while (r > l) {
       mid = (r - l) / 2 + l;
-      if (key[mid] < k || (!(key[mid] < k) && !(k < key[mid]))) {
+      if (!(k < key[mid])) {
         l = mid + 1;
       } else {
         r = mid;
@@ -679,6 +670,7 @@ template <typename KeyType, typename ValType, std::size_t M,
 struct b_epsilon_node
     : public b_base_node<KeyType, ValType, M,
                          b_epsilon_node<KeyType, ValType, M, BufSize>> {
+
   struct lazy_entry {
     enum class lazy_type {
       INVALID = 0,
