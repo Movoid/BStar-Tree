@@ -81,6 +81,41 @@ void nodup_test() {
   puts("NODUP_TEST FINISHED.\n");
 }
 
+void fast_test() {
+
+  b_star_tree<ll, ll, FLOOR> btree{};
+
+  vector<ll *> ans{};
+  printf("\nINSERT FAST TEST\n");
+  for (std::size_t i = 0; i < SCALE; i++) {
+    btree.insert(i, (ll *)i);
+  }
+  // search all
+  for (std::size_t j = 0; j < SCALE; j++) {
+    ans = btree.find(j);
+    if (ans.size() != 1 || (ll)ans[0] != j) {
+      fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
+      exit(-1); // NOLINT
+    }
+  }
+
+  printf("\nERASE FAST TEST\n");
+  for (std::size_t i = 0; i < SCALE; i++) {
+    btree.erase(i);
+  }
+
+  // search all
+  for (std::size_t j = 0; j < SCALE; j++) {
+    ans = btree.find(j);
+    if (!ans.empty()) {
+      fprintf(stderr, "ERASED/FIND COMPARE FAILED.\n");
+      exit(-1); // NOLINT
+    }
+  }
+
+  puts("FAST_TEST FINISHED.\n");
+}
+
 void bstar_benchmark() {
 
   b_star_tree<ll, ll, FLOOR> t{};
@@ -147,7 +182,7 @@ void stdmap_benchmark() {
   clock_gettime(CLOCK_MONOTONIC, &beg3);
   for (std::size_t i = 0; i < SCALE; i++) {
     auto ans = t.find(i);
-    sum += (ll)ans->second;
+    if (ans != t.end()) sum += (ll)ans->second;
   }
   clock_gettime(CLOCK_MONOTONIC, &end3);
 
@@ -213,6 +248,9 @@ void nodup_rangequery_test() {
 }
 
 int main() {
+
+  fast_test();
+
   // bstar_benchmark();
   // stdmap_benchmark();
 

@@ -2,13 +2,13 @@
 
 // #include "bstar_tree.h"
 
-// #include "./bepsilon_tree_.h"
-#include "./bepsilon_tree_refactored.h"
+#include "bepsilon_tree_.h"
+// #include "bepsilon_tree_refactored.h"
 
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{10000000};
+constexpr std::size_t SCALE{1000000};
 constexpr std::size_t FLOOR{145};
 
 void dup_test() {
@@ -82,6 +82,41 @@ void nodup_test() {
   }
 
   puts("NODUP_TEST FINISHED.\n");
+}
+
+void fast_test() {
+
+  b_star_tree<ll, ll, FLOOR> btree{};
+
+  vector<ll *> ans{};
+  printf("\nINSERT FAST TEST\n");
+  for (std::size_t i = 0; i < SCALE; i++) {
+    btree.insert(i, (ll *)i);
+  }
+  // search all
+  for (std::size_t j = 0; j < SCALE; j++) {
+    ans = btree.find(j);
+    if (ans.size() != 1 || (ll)ans[0] != j) {
+      fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
+      exit(-1); // NOLINT
+    }
+  }
+
+  printf("\nERASE FAST TEST\n");
+  for (std::size_t i = 0; i < SCALE; i++) {
+    btree.erase(i);
+  }
+
+  // search all
+  for (std::size_t j = 0; j < SCALE; j++) {
+    ans = btree.find(j);
+    if (!ans.empty()) {
+      fprintf(stderr, "ERASED/FIND COMPARE FAILED.\n");
+      exit(-1); // NOLINT
+    }
+  }
+
+  puts("FAST_TEST FINISHED.\n");
 }
 
 void bstar_benchmark() {
@@ -216,14 +251,14 @@ void nodup_rangequery_test() {
 }
 
 int main() {
-  bstar_benchmark();
-  stdmap_benchmark();
 
-  sleep(1);
+  fast_test();
 
-  nodup_test();
-  nodup_rangequery_test();
-  dup_test();
+  // bstar_benchmark();
+  // stdmap_benchmark();
 
+  // nodup_rangequery_test();
+  // dup_test();
+  // nodup_test();
   return 0;
 }
