@@ -2,7 +2,7 @@
 
 // #include "bstar_tree.h"
 
-#include "./bepsilon_tree_refactored.h"
+#include "./b_trees.h"
 
 using namespace std;
 using ll = long long;
@@ -218,7 +218,7 @@ int main() {
   // bstar_benchmark();
   // stdmap_benchmark();
 
-  nodup_rangequery_test();
+  // nodup_rangequery_test();
   dup_test();
   nodup_test();
 
