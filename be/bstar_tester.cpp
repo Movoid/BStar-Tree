@@ -2,12 +2,13 @@
 
 // #include "bstar_tree.h"
 
+// #include "./bepsilon_tree_.h"
 #include "./bepsilon_tree_refactored.h"
 
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{10000};
+constexpr std::size_t SCALE{10000000};
 constexpr std::size_t FLOOR{145};
 
 void dup_test() {
@@ -149,7 +150,7 @@ void stdmap_benchmark() {
   clock_gettime(CLOCK_MONOTONIC, &beg3);
   for (std::size_t i = 0; i < SCALE; i++) {
     auto ans = t.find(i);
-    sum += (ll)ans->second;
+    if (ans != t.end()) sum += (ll)ans->second;
   }
   clock_gettime(CLOCK_MONOTONIC, &end3);
 
@@ -215,12 +216,14 @@ void nodup_rangequery_test() {
 }
 
 int main() {
-  // bstar_benchmark();
-  // stdmap_benchmark();
+  bstar_benchmark();
+  stdmap_benchmark();
 
+  sleep(1);
+
+  nodup_test();
   nodup_rangequery_test();
   dup_test();
-  nodup_test();
 
   return 0;
 }

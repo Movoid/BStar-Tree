@@ -226,7 +226,7 @@ private:
     // trick
     if (!node1->is_leaf) {
       node2->idx.key_ptr[0] = node1->idx.key_ptr[node1->key_cnt];
-      parent->key[idx1] = node1->key[node1->key_cnt--];
+      parent->key[idx1] = node1->key[--node1->key_cnt];
     }
     parent->idx.key_ptr[idx1] = node1;
     parent->idx.key_ptr[idx1 + 1] = node2;
