@@ -118,7 +118,7 @@ private:
     return (n->key_cnt <= MIN_KEYS);
   }
 
-  bool root_underflow_(const node_type *root) noexcept {
+  bool root_underflow_() noexcept {
     return !root->is_leaf && root->key_cnt == 1;
   }
 
@@ -208,8 +208,8 @@ private:
     return parent->key[idx1];
   }
 
-  void insert_key_in_parent(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1,
-                            const key_type &new_key) noexcept {
+  void insert_key_in_parent_old_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1,
+                                 const key_type &new_key) noexcept {
     std::memmove(parent->key + idx1 + 1, parent->key + idx1, (parent->key_cnt - idx1) * sizeof(key_type));
     std::memmove(parent->idx.key_ptr + idx1 + 2, parent->idx.key_ptr + idx1 + 1,
                  (parent->key_cnt - idx1) * sizeof(node_type *));
@@ -219,7 +219,7 @@ private:
     parent->key_cnt++;
   }
 
-  void new_key_in_parent(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1) noexcept {
+  void new_key_in_parent_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1) noexcept {
     std::memmove(parent->key + idx1 + 1, parent->key + idx1, (parent->key_cnt - idx1) * sizeof(key_type));
     std::memmove(parent->idx.key_ptr + idx1 + 2, parent->idx.key_ptr + idx1 + 1,
                  (parent->key_cnt - idx1) * sizeof(node_type *));
@@ -233,6 +233,17 @@ private:
     parent->key_cnt++;
   }
 
+  void modify_key_in_parent_old_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1,
+                                 const key_type &new_key) noexcept {
+    if (node1->is_leaf) {
+      parent->key[idx1] = node2->key[0];
+    } else {
+      parent->key[idx1] = new_key;
+    }
+    parent->idx.key_ptr[idx1] = node1;
+    parent->idx.key_ptr[idx1 + 1] = node2;
+  }
+
   void modify_key_in_parent_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1,
                              const key_type &new_key) noexcept {
     parent->key[idx1] = new_key;
@@ -240,15 +251,23 @@ private:
     parent->idx.key_ptr[idx1 + 1] = node2;
   }
 
-  void delete_key_in_parent_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1) noexcept {
-    // trick
-    if (!node1->is_leaf) {
-      node1->idx.key_ptr[node1->key_cnt] = node2->idx.key_ptr[0];
-      node1->key[node1->key_cnt++] = parent->key[idx1];
-    }
+  void delete_key_in_parent_old_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1) noexcept {
     std::memmove(parent->key + idx1, parent->key + idx1 + 1, (parent->key_cnt - idx1) * sizeof(key_type));
     std::memmove(parent->idx.key_ptr + idx1 + 1, parent->idx.key_ptr + idx1 + 2,
                  (parent->key_cnt - idx1) * sizeof(node_type *));
+    parent->key_cnt--;
+  }
+
+  void delete_key_in_parent_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1) noexcept {
+    // trick
+    if (!node1->is_leaf) {
+      node1->key[node1->key_cnt++] = parent->key[idx1];
+      node1->idx.key_ptr[node1->key_cnt] = node2->idx.key_ptr[0];
+    }
+    // ???
+    std::memmove(parent->key + idx1, parent->key + idx1 + 1, (parent->key_cnt - (idx1 + 1)) * sizeof(key_type));
+    std::memmove(parent->idx.key_ptr + idx1 + 1, parent->idx.key_ptr + idx1 + 2,
+                 (parent->key_cnt - (idx1 + 1)) * sizeof(node_type *));
     parent->key_cnt--;
   }
 
@@ -261,6 +280,7 @@ private:
     node1->leaf.sib = delete_node->leaf.sib;
   }
 
+  // PASSED FAST_TEST
   void do_1_2_split_root_() noexcept {
     node_type *new_root{new node_type{}};
     new_root->key_cnt = 0;
@@ -272,7 +292,7 @@ private:
     if (root->is_leaf) {
       link_split_leaf(root, node2);
     }
-    new_key_in_parent(root, node2, new_root, 0);
+    new_key_in_parent_(root, node2, new_root, 0);
 
     std::size_t total{root->key_cnt};
     std::size_t need1{(total + 1) / 2};
@@ -285,23 +305,25 @@ private:
     root = new_root;
   }
 
+  // PASSED FAST_TEST
   void do_2_1_merge_root_() noexcept {
-    node_type *new_root{root->idx.key_ptr[0]};
+    node_type *node1{root->idx.key_ptr[0]};
     node_type *node2{root->idx.key_ptr[1]};
 
-    std::size_t total{new_root->key_cnt + node2->key_cnt};
+    std::size_t total{node1->key_cnt + node2->key_cnt};
 
-    key_type new_key{redistribute_keys_(new_root, node2, total, 0, root, 0)};
+    key_type new_key{redistribute_keys_(node1, node2, total, 0, root, 0)};
 
-    delete_key_in_parent_(new_root, node2, root, 0);
+    modify_key_in_parent_(node1, node2, root, 0, new_key);
+    delete_key_in_parent_(node1, node2, root, 0);
 
-    if (new_root->is_leaf) {
-      link_merge_leaf(new_root, node2);
+    if (node1->is_leaf) {
+      link_merge_leaf(node1, node2);
     }
 
     delete node2;
     delete root;
-    root = new_root;
+    root = node1;
   }
 
   void do_2_3_split_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1,
@@ -311,20 +333,36 @@ private:
     node_type *node3{new node_type{}};
     node3->key_cnt = 0;
     node3->is_leaf = node1->is_leaf;
-    if (node1->is_leaf) {
-      link_split_leaf(node2, node3);
-    }
-    new_key_in_parent(node2, node3, parent, idx2);
     std::size_t total{node1->key_cnt + node2->key_cnt};
+
+    if (!node1->is_leaf) {
+      insert_key_in_parent_old_(node2, node3, parent, idx2, node2->key[node2->key_cnt - 1]);
+      node3->idx.key_ptr[0] = node2->idx.key_ptr[node2->key_cnt];
+      node2->key_cnt--;
+      total--;
+    }
+
     std::size_t need1{(total + 2) / 3};
     std::size_t need2{(total + 1) / 3};
     std::size_t need3{total / 3};
 
     // the need sum is node2.key_cnt
     key_type new_key2{redistribute_keys_(node2, node3, node2->key_cnt - need3, need3, parent, idx2)};
+
     key_type new_key1{redistribute_keys_(node1, node2, need1, need2, parent, idx1)};
-    modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
-    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
+
+    if (node1->is_leaf) {
+      insert_key_in_parent_old_(node2, node3, parent, idx2, new_key2);
+    } else {
+      modify_key_in_parent_old_(node2, node3, parent, idx2, new_key2);
+    }
+
+    modify_key_in_parent_old_(node1, node2, parent, idx1, new_key1);
+
+    if (node1->is_leaf) {
+      node3->leaf.sib = node2->leaf.sib;
+      node2->leaf.sib = node3;
+    }
   }
 
   void do_3_2_merge_(node_type *node1, node_type *node2, node_type *node3, node_type *parent, std::size_t idx1,
@@ -334,13 +372,22 @@ private:
     std::size_t need2{total / 2};
 
     key_type new_key1{redistribute_keys_(node1, node2, need1, node1->key_cnt + node2->key_cnt - need1, parent, idx1)};
+
     key_type new_key2{redistribute_keys_(node2, node3, need2, 0, parent, idx2)};
-    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
-    delete_key_in_parent_(node2, node3, parent, idx2);
+
+    modify_key_in_parent_old_(node1, node2, parent, idx1, new_key1);
+
+    delete_key_in_parent_old_(node2, node3, parent, idx2);
 
     if (node1->is_leaf) {
-      link_merge_leaf(node2, node3);
+      // fix next
+      node2->leaf.sib = node3->leaf.sib;
+    } else {
+      node2->key[node2->key_cnt] = new_key2;
+      node2->idx.key_ptr[node2->key_cnt + 1] = node3->idx.key_ptr[0];
+      node2->key_cnt++;
     }
+
     delete node3;
   }
 
@@ -350,7 +397,7 @@ private:
     std::size_t need2{total / 2};
 
     key_type new_key{redistribute_keys_(node1, node2, need1, need2, parent, idx1)};
-    modify_key_in_parent_(node1, node2, parent, idx1, new_key);
+    modify_key_in_parent_old_(node1, node2, parent, idx1, new_key);
   }
 
   void do_3_equal_split_(node_type *node1, node_type *node2, node_type *node3, node_type *parent, std::size_t idx1,
@@ -363,8 +410,12 @@ private:
     key_type new_key1{redistribute_keys_(node1, node2, need1, node1->key_cnt + node2->key_cnt - need1, parent, idx1)};
     key_type new_key2{redistribute_keys_(node2, node3, need2, node2->key_cnt + node3->key_cnt - need2, parent, idx2)};
 
-    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
-    modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
+    modify_key_in_parent_old_(node1, node2, parent, idx1, new_key1);
+    modify_key_in_parent_old_(node2, node3, parent, idx2, new_key2);
+    if (node1->is_leaf) {
+      parent->key[idx1] = node2->key[0];
+      parent->key[idx2] = node3->key[0];
+    }
   }
 
   bool pair_left(node_type *&node_l, node_type *&node_r, std::size_t &idx_l, std::size_t &idx_r,
@@ -442,7 +493,7 @@ private:
     do_3_2_merge_(node1, node2, node3, parent, idx1, idx2, idx3);
   }
 
-  void fix_root_underflow_(node_type *root) {
+  void fix_root_underflow_() {
     node_type *node1{root->idx.key_ptr[0]};
     node_type *node2{root->idx.key_ptr[1]};
     if ((node1->is_leaf && node1->key_cnt + node2->key_cnt <= MAX_KEYS) ||
@@ -580,8 +631,8 @@ public:
 
   // need test
   bool erase(const key_type &k) noexcept {
-    if (root_underflow_(root)) {
-      fix_root_underflow_(root);
+    if (root_underflow_()) {
+      fix_root_underflow_();
     }
     node_type *cur{erase_down_to_leaf(root, k)};
     return erase_leaf(cur, k);

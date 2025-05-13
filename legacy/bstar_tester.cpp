@@ -2,10 +2,13 @@
 
 #include "bstar_tree.h"
 
+// #include "bepsilon_tree_.h"
+// #include "bepsilon_tree_refactored.h"
+
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{10000};
+constexpr std::size_t SCALE{1000000};
 constexpr std::size_t FLOOR{145};
 
 void dup_test() {

@@ -2,8 +2,8 @@
 
 // #include "bstar_tree.h"
 
-#include "bepsilon_tree_.h"
-// #include "bepsilon_tree_refactored.h"
+// #include "bepsilon_tree_.h"
+#include "bepsilon_tree_refactored.h"
 
 using namespace std;
 using ll = long long;
