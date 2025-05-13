@@ -8,8 +8,8 @@
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{10000};
-constexpr std::size_t FLOOR{21};
+constexpr std::size_t SCALE{100000};
+constexpr std::size_t FLOOR{135};
 
 void dup_test() {
 

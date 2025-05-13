@@ -12,31 +12,22 @@
 
 \*================================================*/
 
-/*================================================*\
-
-  B epsilon tree,
-  based on B+*-tree.
-
-  Preemptive merge in buffer flushing
-  is difficult to implement.
-  Underflows are allowed in buffere flushing.
-
-\*================================================*/
-
 template<typename node_type, typename Requires = void>
-struct is_a_node : std::true_type {};
+struct is_a_node : std::false_type {};
 
 template<typename node_type>
 struct is_a_node<
     node_type,
-    std::void_t<decltype(std::declval<typename node_type::key_type>() < std::declval<typename node_type::key_type>()),
-                decltype(typename node_type::key_type{}),
-                decltype(typename node_type::key_type{std::declval<const typename node_type::key_type &>()})>>
+    std::void_t<decltype(std::declval<typename node_type::key_t>() < std::declval<typename node_type::key_t>()),
+                decltype(typename node_type::key_t{}),
+                decltype(typename node_type::key_t{std::declval<const typename node_type::key_t &>()})>>
     : std::true_type {};
 
-template<typename key_type, typename val_type, std::size_t M, typename Derived,
-         typename Requires = std::enable_if_t<is_a_node<Derived>::value>>
+template<typename key_type, typename val_type, std::size_t M, typename Derived>
 struct b_base_node {
+
+  using key_t = key_type;
+  using val_t = val_type;
 
   key_type key[M - 1];
   union {
@@ -86,7 +77,7 @@ template<typename key_type, typename val_type, std::size_t M>
 struct b_star_node : public b_base_node<key_type, val_type, M, b_star_node<key_type, val_type, M>> {};
 
 template<typename key_type, typename val_type, std::size_t M, typename node_type = b_star_node<key_type, val_type, M>,
-         typename Requires = std::void_t<std::enable_if_t<M >= 5>>>
+         typename Requires = std::void_t<std::enable_if_t<is_a_node<node_type>::value && M >= 5>>>
 class b_star_tree {
 protected:
   node_type *root{};
@@ -114,12 +105,14 @@ private:
     return ((a->key_cnt + b->key_cnt + c->key_cnt + 2) / 3) >= MAX_KEYS;
   }
 
+  // UNUSED
   bool merge_2_1_overflow_(const node_type *a, const node_type *b) noexcept {
     std::size_t total{a->key_cnt + b->key_cnt};
     if (!a->is_leaf) total++;
     return (total + 1) / 2 >= MAX_KEYS;
   }
 
+  // UNUSED
   bool merge_3_2_overflow_(const node_type *a, const node_type *b, const node_type *c) noexcept {
     std::size_t total{a->key_cnt + b->key_cnt + c->key_cnt};
     if (!a->is_leaf) total++;
@@ -141,12 +134,14 @@ private:
     return ((a->key_cnt + b->key_cnt + c->key_cnt) / 3) <= MIN_KEYS;
   }
 
+  // UNUSED
   bool split_1_2_underflow_(const node_type *a) noexcept {
     std::size_t total{a->key_cnt};
     if (!a->is_leaf) total--;
     return total / 2 <= MIN_KEYS;
   }
 
+  // UNUSED
   bool split_2_3_underflow_(const node_type *a, const node_type *b) noexcept {
     std::size_t total{a->key_cnt + b->key_cnt};
     if (!a->is_leaf) total--;
@@ -409,16 +404,41 @@ private:
       return;
     }
 
+    auto do_2_equal_split_lambda{[=, this]() -> void { this->do_2_equal_split_(node1, node2, parent, idx1); }};
+    auto do_2_3_split_lambda{[=, this]() -> void { this->do_2_3_split_(node1, node2, parent, idx1, idx2); }};
+
     if (!average_2_overflow_(node1, node2) && !average_2_underflow_(node1, node2)) {
-      do_2_equal_split_(node1, node2, parent, idx1);
+      do_2_equal_split_lambda();
       return;
     }
 
-    do_2_3_split_(node1, node2, parent, idx1, idx2);
+    // <- experiment
+    std::size_t idx3{};
+    node_type *node3{};
+    bool valid3{true};
+    if (pair_left(node3, node1, idx3, idx1, parent)) {
+      std::swap(node3, node2);
+      std::swap(node2, node1);
+      std::swap(idx3, idx2);
+      std::swap(idx2, idx1);
+    } else if (pair_right(node2, node3, idx2, idx3, parent)) {
+      // pass
+    } else {
+      valid3 = false;
+    }
+
+    auto do_3_equal_split_lambda{
+        [=, this]() -> void { this->do_3_equal_split_(node1, node2, node3, parent, idx1, idx2); }};
+
+    if (valid3 && !average_3_overflow_(node1, node2, node3) && !average_3_underflow_(node1, node2, node3)) {
+      do_3_equal_split_lambda();
+    }
+    // experiment ->
+
+    do_2_3_split_lambda();
   }
 
   void fix_root_overflow_() {
-    // do_1_2_split_root_();
     node_type *new_root{new node_type{}};
     new_root->key_cnt = 0;
     new_root->is_leaf = false;
@@ -440,11 +460,6 @@ private:
     } else {
       return;
     }
-
-    // test
-
-    auto solve1{
-        [this, node1, node2, parent, idx1](void) -> void { this->do_2_equal_split_(node1, node2, parent, idx1); }};
 
     if (!average_2_overflow_(node1, node2) && !average_2_underflow_(node1, node2)) {
       do_2_equal_split_(node1, node2, parent, idx1);
@@ -478,7 +493,6 @@ private:
     node_type *node2{root->idx.key_ptr[1]};
     if ((node1->is_leaf && node1->key_cnt + node2->key_cnt <= MAX_KEYS) ||
         (!node1->is_leaf && node1->key_cnt + node2->key_cnt < MAX_KEYS)) {
-      // do_2_1_merge_root_();
       do_2_1_merge_(node1, node2, root, 0);
       delete root;
       root = node1;
@@ -514,8 +528,6 @@ private:
 
 public:
   b_star_tree() noexcept {
-    //
-    // root = new node_type{.key_cnt = 0, .is_leaf = true};
     root = new node_type{};
     root->key_cnt = 0;
     root->is_leaf = true;
@@ -618,14 +630,18 @@ public:
     return erase_leaf(cur, k);
   }
 
-  std::vector<val_type *> find(const key_type &k) const {
+  node_type *find_down_to_leaf(node_type *root, const key_type &k) const {
     node_type *cur{root};
     while (cur && !cur->is_leaf) {
       cur = cur->idx.key_ptr[cur->find_data_ptr_index_(k)];
     }
+    return cur;
+  }
+
+  std::vector<val_type *> find_collect_vals(node_type *cur, const key_type &low, const key_type &high) const {
     std::vector<val_type *> values{};
     while (cur) {
-      std::size_t beg{cur->find_data_ptr_index_(k)}, end{cur->find_idx_ptr_index_(k)};
+      std::size_t beg{cur->find_data_ptr_index_(low)}, end{cur->find_idx_ptr_index_(high)};
       if (end == 0) break;
       for (std::size_t i = beg; i < end; i++) {
         values.emplace_back(cur->leaf.data_ptr[i]);
@@ -633,54 +649,16 @@ public:
       cur = cur->leaf.sib;
     }
     return values;
+  }
+
+  std::vector<val_type *> find(const key_type &k) const {
+    node_type *cur{find_down_to_leaf(root, k)};
+    return find_collect_vals(cur, k, k);
   }
 
   // [low, high)
   std::vector<val_type *> find_range(const key_type &low, const key_type &high) const {
-    node_type *cur{root};
-    while (cur && !cur->is_leaf) {
-      cur = cur->idx.key_ptr[cur->find_data_ptr_index_(low)];
-    }
-    std::vector<val_type *> values{};
-    while (cur) {
-      std::size_t beg{cur->find_data_ptr_index_(low)}, end{cur->find_data_ptr_index_(high)};
-      if (end == 0) break;
-      for (std::size_t i = beg; i < end; i++) {
-        values.emplace_back(cur->leaf.data_ptr[i]);
-      }
-      cur = cur->leaf.sib;
-    }
-    return values;
+    node_type *cur{find_down_to_leaf(root, low)};
+    return find_collect_vals(cur, low, high);
   }
-};
-
-template<typename key_type, typename val_type, std::size_t M, std::size_t BufSize>
-struct b_epsilon_node : public b_base_node<key_type, val_type, M, b_epsilon_node<key_type, val_type, M, BufSize>> {
-
-  struct lazy_entry {
-    enum class lazy_type {
-      INVALID = 0,
-      INSERT = 1,
-      REMOVE = 2,
-    };
-    lazy_type type{};
-    key_type target_key{};
-    val_type target_val{};
-  } *lazy_buf;
-  std::size_t lazy_cnt;
-  void construct_lazy_buf() {
-    lazy_buf = new lazy_entry[BufSize]{};
-  }
-  void destruct_lazy_buf() {
-    delete[] lazy_buf;
-  }
-};
-
-template<typename key_type, typename val_type, std::size_t M,
-         std::size_t BufSize = static_cast<std::size_t>(std::sqrt(M)),
-         typename Requires = std::void_t<std::enable_if_t<BufSize >= 1>>>
-class b_epsilon_tree : public b_star_tree<key_type, val_type, M, b_epsilon_node<key_type, val_type, M, BufSize>> {
-protected:
-public:
-  // todo
 };
