@@ -2,13 +2,13 @@
 
 // #include "bstar_tree.h"
 
-// #include "bepsilon_tree_.h"
-#include "bepsilon_tree_refactored.h"
+// #include "b_star_tree_.h"
+#include "b_star_tree_refactored.h"
 
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{100000};
+constexpr std::size_t SCALE{10000000};
 constexpr std::size_t FLOOR{135};
 
 void dup_test() {
@@ -256,11 +256,11 @@ int main() {
 
   fast_test();
 
-  // bstar_benchmark();
-  // stdmap_benchmark();
+  bstar_benchmark();
+  stdmap_benchmark();
 
-  nodup_test();
-  dup_test();
-  nodup_rangequery_test();
+  // nodup_test();
+  // dup_test();
+  // nodup_rangequery_test();
   return 0;
 }
