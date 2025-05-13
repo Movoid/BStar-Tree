@@ -90,6 +90,7 @@ void fast_test() {
 
   vector<ll *> ans{};
   printf("\nINSERT FAST TEST\n");
+  sleep(1);
   for (std::size_t i = 0; i < SCALE; i++) {
     btree.insert(i, (ll *)i);
   }
@@ -103,6 +104,7 @@ void fast_test() {
   }
 
   printf("\nERASE FAST TEST\n");
+  sleep(1);
   for (std::size_t i = 0; i < SCALE; i++) {
     btree.erase(i);
   }

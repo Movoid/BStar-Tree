@@ -8,8 +8,8 @@
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{1000000};
-constexpr std::size_t FLOOR{145};
+constexpr std::size_t SCALE{100000};
+constexpr std::size_t FLOOR{11};
 
 void dup_test() {
 
@@ -90,6 +90,7 @@ void fast_test() {
 
   vector<ll *> ans{};
   printf("\nINSERT FAST TEST\n");
+  sleep(1);
   for (std::size_t i = 0; i < SCALE; i++) {
     btree.insert(i, (ll *)i);
   }
@@ -103,6 +104,7 @@ void fast_test() {
   }
 
   printf("\nERASE FAST TEST\n");
+  sleep(1);
   for (std::size_t i = 0; i < SCALE; i++) {
     btree.erase(i);
   }
@@ -257,8 +259,8 @@ int main() {
   // bstar_benchmark();
   // stdmap_benchmark();
 
-  // nodup_rangequery_test();
-  // dup_test();
   // nodup_test();
+  // dup_test();
+  nodup_rangequery_test();
   return 0;
 }
