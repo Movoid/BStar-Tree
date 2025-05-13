@@ -99,7 +99,7 @@ protected:
   static constexpr std::size_t MIN_KEYS = (2 * MAX_KEYS - 5) / 3;
 
 private:
-  bool insert_overflow_(const node_type *n) noexcept {
+  bool is_overflow_(const node_type *n) noexcept {
     return n->key_cnt >= MAX_KEYS;
   }
 
@@ -108,13 +108,25 @@ private:
   }
 
   bool average_2_overflow_(const node_type *a, const node_type *b) noexcept {
-    return ((a->key_cnt + b->key_cnt) / 2 >= MAX_KEYS);
+    return ((a->key_cnt + b->key_cnt + 1) / 2 >= MAX_KEYS);
   }
   bool average_3_overflow_(const node_type *a, const node_type *b, const node_type *c) noexcept {
-    return ((a->key_cnt + b->key_cnt + c->key_cnt) / 3) >= MAX_KEYS;
+    return ((a->key_cnt + b->key_cnt + c->key_cnt + 2) / 3) >= MAX_KEYS;
   }
 
-  bool erase_underflow_(const node_type *n) noexcept {
+  bool merge_2_1_overflow_(const node_type *a, const node_type *b) noexcept {
+    std::size_t total{a->key_cnt + b->key_cnt};
+    if (!a->is_leaf) total++;
+    return (total + 1) / 2 >= MAX_KEYS;
+  }
+
+  bool merge_3_2_overflow_(const node_type *a, const node_type *b, const node_type *c) noexcept {
+    std::size_t total{a->key_cnt + b->key_cnt + c->key_cnt};
+    if (!a->is_leaf) total++;
+    return (total + 2) / 3 >= MAX_KEYS;
+  }
+
+  bool is_underflow_(const node_type *n) noexcept {
     return (n->key_cnt <= MIN_KEYS);
   }
 
@@ -127,6 +139,18 @@ private:
   }
   bool average_3_underflow_(const node_type *a, const node_type *b, const node_type *c) noexcept {
     return ((a->key_cnt + b->key_cnt + c->key_cnt) / 3) <= MIN_KEYS;
+  }
+
+  bool split_1_2_underflow_(const node_type *a) noexcept {
+    std::size_t total{a->key_cnt};
+    if (!a->is_leaf) total--;
+    return total / 2 <= MIN_KEYS;
+  }
+
+  bool split_2_3_underflow_(const node_type *a, const node_type *b) noexcept {
+    std::size_t total{a->key_cnt + b->key_cnt};
+    if (!a->is_leaf) total--;
+    return total / 3 <= MIN_KEYS;
   }
 
   // parent != nullptr
@@ -276,6 +300,25 @@ private:
     root = new_root;
   }
 
+  void do_1_2_split_(node_type *node1, node_type *parent, std::size_t idx1) noexcept {
+    node_type *node2{new node_type{}};
+    node2->key_cnt = 0;
+    node2->is_leaf = root->is_leaf;
+
+    if (node1->is_leaf) {
+      link_split_leaf(node1, node2);
+    }
+    new_key_in_parent_(node1, node2, parent, idx1);
+
+    std::size_t total{node1->key_cnt};
+    std::size_t need1{(total + 1) / 2};
+    std::size_t need2{total / 2};
+
+    key_type new_key{redistribute_keys_(node1, node2, need1, need2, parent, 0)};
+
+    modify_key_in_parent_(node1, node2, parent, 0, new_key);
+  }
+
   // PASSED FAST_TEST
   void do_2_1_merge_root_() noexcept {
     node_type *node1{root->idx.key_ptr[0]};
@@ -393,8 +436,10 @@ private:
     if (pair_left(node2, node1, idx2, idx1, parent)) {
       std::swap(node1, node2);
       std::swap(idx1, idx2);
+    } else if (pair_right(node1, node2, idx1, idx2, parent)) {
+      // pass
     } else {
-      pair_right(node1, node2, idx1, idx2, parent);
+      return;
     }
 
     if (!average_2_overflow_(node1, node2) && !average_2_underflow_(node1, node2)) {
@@ -402,41 +447,18 @@ private:
       return;
     }
 
-    // THIS EXPERIMENT SHOULD BE FIX.
-    // THE ORIGIN NEXT NODE WILL BE OUT OF NODE1 AND NODE2,
-    // WHICH CAUSES NOTHING BE DONE WITH NEXT NODE.
-
-    // // experimental
-    // // find the 3rd sibling
-    // std::size_t idx3{};
-    // node_type *node3{};
-    // bool experimental{};
-    // if (pair_left(node3, node1, idx3, idx1, parent)) {
-    //   std::swap(node3, node2);
-    //   std::swap(node2, node1);
-    //   std::swap(idx3, idx2);
-    //   std::swap(idx2, idx1);
-    //   experimental = true;
-    // } else if (pair_right(node2, node3, idx2, idx3, parent)) {
-    //   experimental = true;
-    // } else {
-    //   // fail
-    //   experimental = false;
-    // }
-
-    // if (experimental) {
-    //   if (!average_3_overflow_(node1, node2, node3) && !average_3_underflow_(node1, node2, node3)) {
-    //     do_3_equal_split_(node1, node2, node3, parent, idx1, idx2);
-    //     return;
-    //   }
-    // }
-    // // experimental
-
     do_2_3_split_(node1, node2, parent, idx1, idx2);
   }
 
-  void fix_root_overflow_(node_type *root) {
-    do_1_2_split_root_();
+  void fix_root_overflow_() {
+    // do_1_2_split_root_();
+    node_type *new_root{new node_type{}};
+    new_root->key_cnt = 0;
+    new_root->is_leaf = false;
+
+    do_1_2_split_(root, new_root, 0);
+
+    root = new_root;
   }
 
   void fix_underflow_(node_type *node1, node_type *parent, std::size_t idx1) noexcept {
@@ -446,8 +468,20 @@ private:
     if (pair_left(node2, node1, idx2, idx1, parent)) {
       std::swap(node2, node1);
       std::swap(idx2, idx1);
+    } else if (pair_right(node1, node2, idx1, idx2, parent)) {
+      // pass
     } else {
-      pair_right(node1, node2, idx1, idx2, parent);
+      return;
+    }
+
+    // test
+
+    auto solve1{
+        [this, node1, node2, parent, idx1](void) -> void { this->do_2_equal_split_(node1, node2, parent, idx1); }};
+
+    if (!average_2_overflow_(node1, node2) && !average_2_underflow_(node1, node2)) {
+      do_2_equal_split_(node1, node2, parent, idx1);
+      return;
     }
 
     // find the 3rd sibling
@@ -458,13 +492,9 @@ private:
       std::swap(node2, node1);
       std::swap(idx3, idx2);
       std::swap(idx2, idx1);
+    } else if (pair_right(node2, node3, idx2, idx3, parent)) {
+      // pass
     } else {
-      pair_right(node2, node3, idx2, idx3, parent);
-    }
-
-    // THIS IS A TEMPORARY PATCH.
-    // FOR WHEN ROOT ONLY HAS 2 CHILD AND CANNOT MERGE TO ROOT.
-    if (!node3) {
       return;
     }
 
@@ -549,7 +579,7 @@ public:
     while (!cur->is_leaf) {
       next_from = cur->find_idx_ptr_index_(k);
       next = cur->idx.key_ptr[next_from];
-      if (insert_overflow_(next)) {
+      if (is_overflow_(next)) {
         fix_overflow_(next, cur, next_from);
         next_from = cur->find_idx_ptr_index_(k);
       }
@@ -573,7 +603,7 @@ public:
 
   bool insert(const key_type &k, val_type *v) noexcept {
     if (root_overflow_(root)) {
-      fix_root_overflow_(root);
+      fix_root_overflow_();
     }
     node_type *cur{insert_down_to_leaf(root, k)};
     return insert_leaf(cur, k, v);
@@ -585,7 +615,7 @@ public:
     while (!cur->is_leaf) {
       next_from = cur->find_idx_ptr_index_(k);
       next = cur->idx.key_ptr[next_from];
-      if (erase_underflow_(next)) {
+      if (is_underflow_(next)) {
         fix_underflow_(next, cur, next_from);
         if (cur->is_leaf) break;
         next_from = cur->find_idx_ptr_index_(k);
