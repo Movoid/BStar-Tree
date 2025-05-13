@@ -275,31 +275,6 @@ private:
     node1->leaf.sib = delete_node->leaf.sib;
   }
 
-  // PASSED FAST_TEST
-  void do_1_2_split_root_() noexcept {
-    node_type *new_root{new node_type{}};
-    new_root->key_cnt = 0;
-    new_root->is_leaf = false;
-    node_type *node2{new node_type{}};
-    node2->key_cnt = 0;
-    node2->is_leaf = root->is_leaf;
-
-    if (root->is_leaf) {
-      link_split_leaf(root, node2);
-    }
-    new_key_in_parent_(root, node2, new_root, 0);
-
-    std::size_t total{root->key_cnt};
-    std::size_t need1{(total + 1) / 2};
-    std::size_t need2{total / 2};
-
-    key_type new_key{redistribute_keys_(root, node2, need1, need2, new_root, 0)};
-
-    modify_key_in_parent_(root, node2, new_root, 0, new_key);
-
-    root = new_root;
-  }
-
   void do_1_2_split_(node_type *node1, node_type *parent, std::size_t idx1) noexcept {
     node_type *node2{new node_type{}};
     node2->key_cnt = 0;
@@ -319,25 +294,17 @@ private:
     modify_key_in_parent_(node1, node2, parent, 0, new_key);
   }
 
-  // PASSED FAST_TEST
-  void do_2_1_merge_root_() noexcept {
-    node_type *node1{root->idx.key_ptr[0]};
-    node_type *node2{root->idx.key_ptr[1]};
-
+  void do_2_1_merge_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1) noexcept {
     std::size_t total{node1->key_cnt + node2->key_cnt};
-
-    key_type new_key{redistribute_keys_(node1, node2, total, 0, root, 0)};
-
-    modify_key_in_parent_(node1, node2, root, 0, new_key);
-    delete_key_in_parent_(node1, node2, root, 0);
+    key_type new_key{redistribute_keys_(node1, node2, total, 0, parent, idx1)};
+    modify_key_in_parent_(node1, node2, parent, idx1, new_key);
+    delete_key_in_parent_(node1, node2, parent, idx1);
 
     if (node1->is_leaf) {
       link_merge_leaf(node1, node2);
     }
 
     delete node2;
-    delete root;
-    root = node1;
   }
 
   // PASSED FAST_TEST
@@ -511,7 +478,10 @@ private:
     node_type *node2{root->idx.key_ptr[1]};
     if ((node1->is_leaf && node1->key_cnt + node2->key_cnt <= MAX_KEYS) ||
         (!node1->is_leaf && node1->key_cnt + node2->key_cnt < MAX_KEYS)) {
-      do_2_1_merge_root_();
+      // do_2_1_merge_root_();
+      do_2_1_merge_(node1, node2, root, 0);
+      delete root;
+      root = node1;
     } else {
       do_2_equal_split_(node1, node2, root, 0);
     }

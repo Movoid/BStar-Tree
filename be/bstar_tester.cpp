@@ -8,8 +8,8 @@
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{100000};
-constexpr std::size_t FLOOR{11};
+constexpr std::size_t SCALE{10000};
+constexpr std::size_t FLOOR{21};
 
 void dup_test() {
 
@@ -259,8 +259,8 @@ int main() {
   // bstar_benchmark();
   // stdmap_benchmark();
 
-  // nodup_test();
-  // dup_test();
+  nodup_test();
+  dup_test();
   nodup_rangequery_test();
   return 0;
 }
