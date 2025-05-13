@@ -326,45 +326,31 @@ private:
     root = node1;
   }
 
+  // PASSED FAST_TEST
   void do_2_3_split_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1,
                      std::size_t idx2) noexcept {
-    // first fill node3
-    // node_type *node3{new node_type{.key_cnt = 0, .is_leaf = node1->is_leaf}};
     node_type *node3{new node_type{}};
     node3->key_cnt = 0;
     node3->is_leaf = node1->is_leaf;
-    std::size_t total{node1->key_cnt + node2->key_cnt};
 
-    if (!node1->is_leaf) {
-      insert_key_in_parent_old_(node2, node3, parent, idx2, node2->key[node2->key_cnt - 1]);
-      node3->idx.key_ptr[0] = node2->idx.key_ptr[node2->key_cnt];
-      node2->key_cnt--;
-      total--;
+    new_key_in_parent_(node2, node3, parent, idx2);
+    if (node1->is_leaf) {
+      link_split_leaf(node2, node3);
     }
 
+    std::size_t total{node1->key_cnt + node2->key_cnt};
     std::size_t need1{(total + 2) / 3};
     std::size_t need2{(total + 1) / 3};
     std::size_t need3{total / 3};
 
-    // the need sum is node2.key_cnt
     key_type new_key2{redistribute_keys_(node2, node3, node2->key_cnt - need3, need3, parent, idx2)};
+    modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
 
     key_type new_key1{redistribute_keys_(node1, node2, need1, need2, parent, idx1)};
-
-    if (node1->is_leaf) {
-      insert_key_in_parent_old_(node2, node3, parent, idx2, new_key2);
-    } else {
-      modify_key_in_parent_old_(node2, node3, parent, idx2, new_key2);
-    }
-
-    modify_key_in_parent_old_(node1, node2, parent, idx1, new_key1);
-
-    if (node1->is_leaf) {
-      node3->leaf.sib = node2->leaf.sib;
-      node2->leaf.sib = node3;
-    }
+    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
   }
 
+  // PASSED FAST_TEST
   void do_3_2_merge_(node_type *node1, node_type *node2, node_type *node3, node_type *parent, std::size_t idx1,
                      std::size_t idx2, std::size_t idx3) noexcept {
     std::size_t total{node1->key_cnt + node2->key_cnt + node3->key_cnt};
@@ -372,20 +358,14 @@ private:
     std::size_t need2{total / 2};
 
     key_type new_key1{redistribute_keys_(node1, node2, need1, node1->key_cnt + node2->key_cnt - need1, parent, idx1)};
-
-    key_type new_key2{redistribute_keys_(node2, node3, need2, 0, parent, idx2)};
-
     modify_key_in_parent_old_(node1, node2, parent, idx1, new_key1);
 
-    delete_key_in_parent_old_(node2, node3, parent, idx2);
+    key_type new_key2{redistribute_keys_(node2, node3, need2, 0, parent, idx2)};
+    modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
+    delete_key_in_parent_(node2, node3, parent, idx2);
 
     if (node1->is_leaf) {
-      // fix next
-      node2->leaf.sib = node3->leaf.sib;
-    } else {
-      node2->key[node2->key_cnt] = new_key2;
-      node2->idx.key_ptr[node2->key_cnt + 1] = node3->idx.key_ptr[0];
-      node2->key_cnt++;
+      link_merge_leaf(node2, node3);
     }
 
     delete node3;
