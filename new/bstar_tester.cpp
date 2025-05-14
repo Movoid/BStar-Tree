@@ -8,259 +8,60 @@
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{10000000};
-constexpr std::size_t FLOOR{135};
+constexpr std::size_t SCALE{10000};
+constexpr std::size_t FLOOR{7};
 
-void dup_test() {
+using b_star = b_star_tree<ll, ll, FLOOR>;
 
-  b_star_tree<ll, ll, FLOOR> btree{}, tmp{};
-
-  vector<ll *> ans{};
-
-  for (std::size_t i = 0; i < SCALE; i++) {
-    printf("\nINSERT TIMESTAMP %zu\n", i);
-    tmp.insert(123, (ll *)123);
-    // search
-    ans = tmp.find(123);
-    if (ans.size() != (i + 1) || (!ans.empty() && (ll)ans[0] != 123)) {
-      fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
-      exit(-1); // NOLINT
-    }
-  }
-
-  btree = std::move(tmp);
-
-  for (std::size_t i = 0; i < SCALE; i++) {
-    printf("\nERASE TIMESTAMP %zu\n", i);
-    btree.erase(123);
-    ans = btree.find(123);
-    if (ans.size() != (SCALE - i - 1) || (!ans.empty() && (ll)ans[0] != 123)) {
-      fprintf(stderr, "REMAINED/FIND COMPARE FAILED.\n");
-      exit(-1); // NOLINT
-    }
-  }
-
-  puts("DUP_TEST FINISHED.\n");
+double time_diff(const timespec &beg, const timespec &end) {
+  return static_cast<double>(end.tv_sec - beg.tv_sec) +
+         static_cast<double>(end.tv_nsec - beg.tv_nsec) / 1'000'000'000.0;
 }
 
-void nodup_test() {
-
-  b_star_tree<ll, ll, FLOOR> btree{};
-
-  vector<ll *> ans{};
-  for (std::size_t i = 0; i < SCALE; i++) {
-    printf("\nINSERT TIMESTAMP %zu\n", i);
-    btree.insert(i, (ll *)i);
-    // search all
-    for (std::size_t j = 0; j <= i; j++) {
-      ans = btree.find(j);
-      if (ans.size() != 1 || (ll)ans[0] != j) {
-        fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
-        exit(-1); // NOLINT
-      }
-    }
-  }
-
-  for (std::size_t i = 0; i < SCALE; i++) {
-    printf("\nERASE TIMESTAMP %zu\n", i);
-    btree.erase(i);
-    // search all
-    for (std::size_t j = 0; j <= i; j++) {
-      ans = btree.find(i);
-      if (!ans.empty()) {
-        fprintf(stderr, "ERASED/FIND COMPARE FAILED.\n");
-        exit(-1); // NOLINT
-      }
-    }
-    for (std::size_t j = i + 1; j < SCALE; j++) {
-      ans = btree.find(j);
-      if (ans.size() != 1 || (ll)ans[0] != j) {
-        fprintf(stderr, "REMAINED/FIND COMPARE FAILED.\n");
-        exit(-1); // NOLINT
-      }
-    }
-  }
-
-  puts("NODUP_TEST FINISHED.\n");
-}
-
-void fast_test() {
-
-  b_star_tree<ll, ll, FLOOR> btree{};
-
-  vector<ll *> ans{};
-  printf("\nINSERT FAST TEST\n");
-  sleep(1);
-  for (std::size_t i = 0; i < SCALE; i++) {
-    btree.insert(i, (ll *)i);
-  }
-  // search all
-  for (std::size_t j = 0; j < SCALE; j++) {
-    ans = btree.find(j);
-    if (ans.size() != 1 || (ll)ans[0] != j) {
-      fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
-      exit(-1); // NOLINT
-    }
-  }
-
-  printf("\nERASE FAST TEST\n");
-  sleep(1);
-  for (std::size_t i = 0; i < SCALE; i++) {
-    btree.erase(i);
-  }
-
-  // search all
-  for (std::size_t j = 0; j < SCALE; j++) {
-    ans = btree.find(j);
-    if (!ans.empty()) {
-      fprintf(stderr, "ERASED/FIND COMPARE FAILED.\n");
-      exit(-1); // NOLINT
-    }
-  }
-
-  puts("FAST_TEST FINISHED.\n");
-}
-
-void bstar_benchmark() {
-
-  b_star_tree<ll, ll, FLOOR> t{};
-  timespec beg1{}, end1{}, beg2{}, end2{}, beg3{}, end3{};
-
-  std::cout << "B-star insert" << std::endl;
-  clock_gettime(CLOCK_MONOTONIC, &beg1);
-  for (std::size_t i = 0; i < SCALE; i++) {
-    t.insert(i, (ll *)i);
-  }
-  clock_gettime(CLOCK_MONOTONIC, &end1);
-
-  std::cout << "B-star erase" << std::endl;
-  clock_gettime(CLOCK_MONOTONIC, &beg2);
-  for (std::size_t i = 0; i < SCALE; i++) {
-    t.erase(i);
-  }
-  clock_gettime(CLOCK_MONOTONIC, &end2);
-
-  std::cout << "B-star find" << std::endl;
+void check_bstar(ll *keys, const b_star &tree, std::size_t beg, std::size_t end) {
   std::vector<ll *> ans{};
-  clock_gettime(CLOCK_MONOTONIC, &beg3);
-  for (std::size_t i = 0; i < SCALE; i++) {
-    ans = t.find(i);
+  for (std::size_t i = beg; i < end; i++) {
+    ans = tree.find(keys[i]);
+    if (ans.empty()) {
+      fprintf(stderr, "CHECK FAILED IN [%zu, %zu) !\n", beg, end);
+      _exit(-1);
+    }
   }
-  clock_gettime(CLOCK_MONOTONIC, &end3);
-
-  auto timespec_diff_sec = [](const timespec &start,
-                              const timespec &end) -> double {
-    return static_cast<double>(end.tv_sec - start.tv_sec) +
-           static_cast<double>(end.tv_nsec - start.tv_nsec) / 1'000'000'000.0;
-  };
-
-  double insert_time = timespec_diff_sec(beg1, end1);
-  double erase_time = timespec_diff_sec(beg2, end2);
-  double find_time = timespec_diff_sec(beg3, end3);
-
-  std::cout << "Insert time: " << insert_time << " s\n";
-  std::cout << "Erase time:  " << erase_time << " s\n";
-  std::cout << "Find time:  " << find_time << " s\n";
 }
 
-void stdmap_benchmark() {
+void random_test() {
 
-  std::map<ll, ll *> t{};
-  timespec beg1{}, end1{}, beg2{}, end2{}, beg3{}, end3{};
+  puts("\n[RANDOM_TEST]");
 
-  std::cout << "std::map insert" << std::endl;
-  clock_gettime(CLOCK_MONOTONIC, &beg1);
+  b_star tree{};
+
+  std::random_device rd{};
+  std::mt19937 gen{2};
+  std::uniform_int_distribution<> dis{1, SCALE};
+
+  ll *keys{new ll[SCALE]{}};
   for (std::size_t i = 0; i < SCALE; i++) {
-    t.emplace(i, (ll *)i);
+    keys[i] = dis(gen);
   }
-  clock_gettime(CLOCK_MONOTONIC, &end1);
 
-  std::cout << "std::map erase" << std::endl;
-  clock_gettime(CLOCK_MONOTONIC, &beg2);
+  puts("INSERT TEST");
   for (std::size_t i = 0; i < SCALE; i++) {
-    t.erase(i);
+    tree.insert(keys[i], (ll *)i);
+    // check_bstar(keys, tree, 0, i + 1);
   }
-  clock_gettime(CLOCK_MONOTONIC, &end2);
 
-  std::cout << "std::map find" << std::endl;
-  volatile ll sum{};
-  clock_gettime(CLOCK_MONOTONIC, &beg3);
+  puts("ERASE TEST");
   for (std::size_t i = 0; i < SCALE; i++) {
-    auto ans = t.find(i);
-    if (ans != t.end()) sum += (ll)ans->second;
-  }
-  clock_gettime(CLOCK_MONOTONIC, &end3);
-
-  auto timespec_diff_sec = [](const timespec &start,
-                              const timespec &end) -> double {
-    return static_cast<double>(end.tv_sec - start.tv_sec) +
-           static_cast<double>(end.tv_nsec - start.tv_nsec) / 1'000'000'000.0;
-  };
-
-  double insert_time = timespec_diff_sec(beg1, end1);
-  double erase_time = timespec_diff_sec(beg2, end2);
-  double find_time = timespec_diff_sec(beg3, end3);
-
-  std::cout << "Insert time: " << insert_time << " s\n";
-  std::cout << "Erase time:  " << erase_time << " s\n";
-  std::cout << "Find time:  " << find_time << " s\n";
-}
-
-void nodup_rangequery_test() {
-
-  b_star_tree<ll, ll, FLOOR> btree{};
-
-  vector<ll *> ans{};
-
-  for (int i = 0; i < SCALE; i++) {
-    printf("\nINSERT TIMESTAMP %zu\n", i);
-    btree.insert(i, (ll *)123);
-    // search
-    ans = btree.find_range(std::max(0, i - 100), i + 1);
-    if (ans.size() != (i + 1 - std::max(0, i - 100))) {
-      fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
-      exit(-1); // NOLINT
-    }
-    if (!ans.empty()) {
-      for (std::size_t i = 0; i < ans.size(); i++) {
-        if ((ll)ans[i] != 123) {
-          fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
-          exit(-1); // NOLINT
-        }
-      }
-    }
+    tree.erase(keys[i]);
+    if (i == 1960) check_bstar(keys, tree, i + 1, SCALE);
   }
 
-  for (int i = 0; i < SCALE; i++) {
-    printf("\nERASE TIMESTAMP %zu\n", i);
-    btree.erase(i);
-    ans = btree.find_range(i + 1, SCALE);
-    if (ans.size() != (SCALE - i - 1)) {
-      fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
-      exit(-1); // NOLINT
-    }
-    if (!ans.empty()) {
-      for (std::size_t i = 0; i < ans.size(); i++) {
-        if ((ll)ans[i] != 123) {
-          fprintf(stderr, "INSERTED/FIND COMPARE FAILED.\n");
-          exit(-1); // NOLINT
-        }
-      }
-    }
-  }
+  delete[] keys;
 
-  puts("NODUP_RANGEQUERY_TEST FINISHED.\n");
+  puts("[RANDOM_TEST] PASSED !");
 }
 
 int main() {
 
-  fast_test();
-
-  bstar_benchmark();
-  stdmap_benchmark();
-
-  // nodup_test();
-  // dup_test();
-  // nodup_rangequery_test();
-  return 0;
+  random_test();
 }

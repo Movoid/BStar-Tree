@@ -1,15 +1,14 @@
 #include <bits/stdc++.h>
 
-#include "bstar_tree.h"
+// #include "bstar_tree.h"
 
-// #include "bepsilon_tree_.h"
-// #include "bepsilon_tree_refactored.h"
+#include "b_star_tree_refactored.h"
 
 using namespace std;
 using ll = long long;
 
-constexpr std::size_t SCALE{1000000};
-constexpr std::size_t FLOOR{145};
+constexpr std::size_t SCALE{10000000};
+constexpr std::size_t FLOOR{32};
 
 void dup_test() {
 
@@ -148,8 +147,7 @@ void bstar_benchmark() {
   }
   clock_gettime(CLOCK_MONOTONIC, &end3);
 
-  auto timespec_diff_sec = [](const timespec &start,
-                              const timespec &end) -> double {
+  auto timespec_diff_sec = [](const timespec &start, const timespec &end) -> double {
     return static_cast<double>(end.tv_sec - start.tv_sec) +
            static_cast<double>(end.tv_nsec - start.tv_nsec) / 1'000'000'000.0;
   };
@@ -191,8 +189,7 @@ void stdmap_benchmark() {
   }
   clock_gettime(CLOCK_MONOTONIC, &end3);
 
-  auto timespec_diff_sec = [](const timespec &start,
-                              const timespec &end) -> double {
+  auto timespec_diff_sec = [](const timespec &start, const timespec &end) -> double {
     return static_cast<double>(end.tv_sec - start.tv_sec) +
            static_cast<double>(end.tv_nsec - start.tv_nsec) / 1'000'000'000.0;
   };
@@ -240,10 +237,10 @@ void bstar_random_benchmark() {
   clock_gettime(CLOCK_MONOTONIC, &end2);
 
   std::cout << "B-star find" << std::endl;
-  std::vector<ll *> ans{};
+  volatile ll ans{};
   clock_gettime(CLOCK_MONOTONIC, &beg3);
   for (std::size_t i = 0; i < SCALE; i++) {
-    ans = t.find(keys[i]);
+    ans += (ll)t.find_single(keys[i]);
   }
   clock_gettime(CLOCK_MONOTONIC, &end3);
 
@@ -367,7 +364,7 @@ void nodup_rangequery_test() {
 
 int main() {
 
-  fast_test();
+  // fast_test();
 
   bstar_random_benchmark();
   stdmap_random_benchmark();

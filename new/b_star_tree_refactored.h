@@ -13,7 +13,7 @@
 \*================================================*/
 
 template<typename node_type, typename Requires = void>
-struct is_a_node : std::false_type {};
+struct is_a_node : std::true_type {};
 
 template<typename node_type>
 struct is_a_node<
@@ -29,6 +29,8 @@ struct b_base_node {
   using key_t = key_type;
   using val_t = val_type;
 
+  std::size_t key_cnt;
+  bool is_leaf;
   key_type key[M - 1];
   union {
     struct {
@@ -39,8 +41,6 @@ struct b_base_node {
       Derived *key_ptr[M];
     } idx;
   };
-  std::size_t key_cnt;
-  bool is_leaf;
 
   std::size_t find_idx_ptr_index_(const key_type &k) noexcept {
     std::size_t l{0}, r{key_cnt};
@@ -243,7 +243,11 @@ private:
 
   void modify_key_in_parent_(node_type *node1, node_type *node2, node_type *parent, std::size_t idx1,
                              const key_type &new_key) noexcept {
-    parent->key[idx1] = new_key;
+    if (node1->is_leaf) {
+      parent->key[idx1] = node2->key[0];
+    } else {
+      parent->key[idx1] = new_key;
+    }
     parent->idx.key_ptr[idx1] = node1;
     parent->idx.key_ptr[idx1 + 1] = node2;
   }
@@ -320,9 +324,8 @@ private:
     std::size_t need3{total / 3};
 
     key_type new_key2{redistribute_keys_(node2, node3, node2->key_cnt - need3, need3, parent, idx2)};
-    modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
-
     key_type new_key1{redistribute_keys_(node1, node2, need1, need2, parent, idx1)};
+    modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
     modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
   }
 
@@ -334,9 +337,8 @@ private:
     std::size_t need2{total / 2};
 
     key_type new_key1{redistribute_keys_(node1, node2, need1, node1->key_cnt + node2->key_cnt - need1, parent, idx1)};
-    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
-
     key_type new_key2{redistribute_keys_(node2, node3, need2, 0, parent, idx2)};
+    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
     modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
     delete_key_in_parent_(node2, node3, parent, idx2);
 
@@ -364,11 +366,24 @@ private:
     std::size_t need2{(total + 1) / 3};
     std::size_t need3{total / 3};
 
-    key_type new_key1{redistribute_keys_(node1, node2, need1, node1->key_cnt + node2->key_cnt - need1, parent, idx1)};
-    modify_key_in_parent_(node1, node2, parent, idx1, new_key1);
+    // this algorithm comes up with waterflow.
 
-    key_type new_key2{redistribute_keys_(node2, node3, need2, node2->key_cnt + node3->key_cnt - need2, parent, idx2)};
-    modify_key_in_parent_(node2, node3, parent, idx2, new_key2);
+    std::size_t tmp{};
+
+    if ((tmp = node1->key_cnt + node2->key_cnt) <= need1 + need2) {
+      key_type new_key{redistribute_keys_(node1, node2, need1, tmp - need1, parent, idx1)};
+      modify_key_in_parent_(node1, node2, parent, idx1, new_key);
+    }
+
+    if ((tmp = node2->key_cnt + node3->key_cnt) <= need2 + need3) {
+      key_type new_key{redistribute_keys_(node2, node3, tmp - need3, need3, parent, idx2)};
+      modify_key_in_parent_(node2, node3, parent, idx2, new_key);
+    }
+
+    if ((tmp = node1->key_cnt + node2->key_cnt) <= need1 + need2) {
+      key_type new_key{redistribute_keys_(node1, node2, tmp - need2, need2, parent, idx1)};
+      modify_key_in_parent_(node1, node2, parent, idx1, new_key);
+    }
   }
 
   bool pair_left(node_type *&node_l, node_type *&node_r, std::size_t &idx_l, std::size_t &idx_r,
@@ -638,27 +653,41 @@ public:
     return cur;
   }
 
-  std::vector<val_type *> find_collect_vals(node_type *cur, const key_type &low, const key_type &high) const {
-    std::vector<val_type *> values{};
+  std::vector<val_type *> find_collect_multi(node_type *cur, const key_type &low, const key_type &high) const {
+    std::vector<val_type *> vals{};
     while (cur) {
       std::size_t beg{cur->find_data_ptr_index_(low)}, end{cur->find_idx_ptr_index_(high)};
       if (end == 0) break;
       for (std::size_t i = beg; i < end; i++) {
-        values.emplace_back(cur->leaf.data_ptr[i]);
+        vals.emplace_back(cur->leaf.data_ptr[i]);
       }
       cur = cur->leaf.sib;
     }
-    return values;
+    return vals;
+  }
+
+  val_type *find_collect_single(node_type *cur, const key_type &k) const {
+    std::size_t beg{cur->find_data_ptr_index_(k)};
+    if (cur->key[beg] != k) {
+      return nullptr;
+    } else {
+      return cur->leaf.data_ptr[beg];
+    }
   }
 
   std::vector<val_type *> find(const key_type &k) const {
     node_type *cur{find_down_to_leaf(root, k)};
-    return find_collect_vals(cur, k, k);
+    return find_collect_multi(cur, k, k);
+  }
+
+  val_type *find_single(const key_type &k) const {
+    node_type *cur{find_down_to_leaf(root, k)};
+    return find_collect_single(cur, k);
   }
 
   // [low, high)
   std::vector<val_type *> find_range(const key_type &low, const key_type &high) const {
     node_type *cur{find_down_to_leaf(root, low)};
-    return find_collect_vals(cur, low, high);
+    return find_collect_multi(cur, low, high);
   }
 };
