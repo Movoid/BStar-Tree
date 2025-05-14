@@ -9,8 +9,10 @@ C-style, not STL.
 - [x] Range query
 - [ ] Cpp-style
 
-> NO DUPLICATED KEY SUPPORTED.
-> Lack of error handling.
+> NO DUPLICATED KEY ORIGINALLY SUPPORTED,  
+> but val_type can be a `std::vector` or some container else.  
+
+> Lack of error handling.  
 
 ```benchmark
 
