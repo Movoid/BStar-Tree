@@ -13,7 +13,7 @@
 \*================================================*/
 
 template<typename node_type, typename Requires = void>
-struct is_a_node : std::true_type {};
+struct is_a_node : std::false_type {};
 
 template<typename node_type>
 struct is_a_node<
