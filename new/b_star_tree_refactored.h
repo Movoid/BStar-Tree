@@ -77,7 +77,7 @@ template<typename key_type, typename val_type, std::size_t M>
 struct b_star_node : public b_base_node<key_type, val_type, M, b_star_node<key_type, val_type, M>> {};
 
 template<typename key_type, typename val_type, std::size_t M, typename node_type = b_star_node<key_type, val_type, M>,
-         typename Requires = std::void_t<std::enable_if_t<is_a_node<node_type>::value && M >= 5>>>
+         typename Requires = std::void_t<std::enable_if_t<is_a_node<node_type>::value && M >= 7>>>
 class b_star_tree {
 protected:
   node_type *root{};
@@ -588,6 +588,10 @@ public:
   bool insert_leaf(node_type *cur, const key_type &k, val_type *v) noexcept {
     std::size_t check{cur->find_data_ptr_index_(k)};
     std::size_t idx{cur->find_idx_ptr_index_(k)};
+    // NO DUPLICATED KEY SUPPORTED
+    if (check < cur->key_cnt && cur->key[check] == k) {
+      return false;
+    }
     if (idx != cur->key_cnt) {
       std::memmove(cur->leaf.data_ptr + idx + 1, cur->leaf.data_ptr + idx, (cur->key_cnt - idx) * sizeof(val_type *));
       std::memmove(cur->key + idx + 1, cur->key + idx, (cur->key_cnt - idx) * sizeof(key_type));
@@ -648,12 +652,12 @@ public:
   node_type *find_down_to_leaf(node_type *root, const key_type &k) const {
     node_type *cur{root};
     while (cur && !cur->is_leaf) {
-      cur = cur->idx.key_ptr[cur->find_data_ptr_index_(k)];
+      cur = cur->idx.key_ptr[cur->find_idx_ptr_index_(k)];
     }
     return cur;
   }
 
-  std::vector<val_type *> find_collect_multi(node_type *cur, const key_type &low, const key_type &high) const {
+  std::vector<val_type *> find_collect_range(node_type *cur, const key_type &low, const key_type &high) const {
     std::vector<val_type *> vals{};
     while (cur) {
       std::size_t beg{cur->find_data_ptr_index_(low)}, end{cur->find_idx_ptr_index_(high)};
@@ -675,11 +679,6 @@ public:
     }
   }
 
-  std::vector<val_type *> find(const key_type &k) const {
-    node_type *cur{find_down_to_leaf(root, k)};
-    return find_collect_multi(cur, k, k);
-  }
-
   val_type *find_single(const key_type &k) const {
     node_type *cur{find_down_to_leaf(root, k)};
     return find_collect_single(cur, k);
@@ -688,6 +687,6 @@ public:
   // [low, high)
   std::vector<val_type *> find_range(const key_type &low, const key_type &high) const {
     node_type *cur{find_down_to_leaf(root, low)};
-    return find_collect_multi(cur, low, high);
+    return find_collect_range(cur, low, high);
   }
 };
