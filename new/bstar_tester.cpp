@@ -156,6 +156,6 @@ int main() {
 
   random_test();
 
-  stdmap_benchmark();
+  // stdmap_benchmark();
   bstar_benchmark();
 }

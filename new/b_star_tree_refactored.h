@@ -84,10 +84,16 @@ protected:
   static constexpr std::size_t KEY_SLOTS = M - 1;
   static constexpr std::size_t MAX_KEYS = KEY_SLOTS;
 
-  // this `MIN_KEYS` comes from:
-  // `ceil( (MIN + MIN + MIN+2) + 1 ) / 2 <= MAX` .
-  // 2-3 split MUST be successful if equal-split-3 is failed.
-  static constexpr std::size_t MIN_KEYS = (2 * MAX_KEYS - 5) / 3;
+  /**
+   * This `MIN_KEYS` comes from 3-2 merge which cannot be overflowed:
+   * `ceil( ((MIN + MIN + MIN + 2) + 1) / 2) <= MAX` .
+   *
+   * `+2` is needed to trigger 3-2 merge with the max amount of kv pairs.
+   * `+1` is for the additional index kv pair from parent.
+   *
+   * Also, 2-3 split MUST be successful if equal-split-3 is failed.
+   */
+  static constexpr std::size_t MIN_KEYS = (2 * MAX_KEYS - 4) / 3;
 
 private:
   bool is_overflow_(const node_type *n) noexcept {
